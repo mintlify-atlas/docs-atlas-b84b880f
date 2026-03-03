@@ -1,0 +1,116 @@
+{
+  "projectType": "saas",
+  "projectName": "CEMAC",
+  "projectDescription": "Sistema de gestión de inventario y análisis de ventas para negocios de papelería y detalles",
+  "theme": "almond",
+  "primaryColor": "#3B82F6",
+  "lightColor": "#93C5FD",
+  "darkColor": "#1E40AF",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "installation"
+            ]
+          },
+          {
+            "group": "Core Features",
+            "pages": [
+              "features/inventory-management",
+              "features/sales-tracking",
+              "features/analytics-reports",
+              "features/alerts-notifications",
+              "features/user-management"
+            ]
+          },
+          {
+            "group": "User Guides",
+            "pages": [
+              "guides/authentication",
+              "guides/managing-inventory",
+              "guides/processing-sales",
+              "guides/viewing-analytics",
+              "guides/managing-suppliers-brands",
+              "guides/managing-customers"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration/environment-variables",
+              "configuration/firebase-setup",
+              "configuration/deployment"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api/overview",
+              "api/authentication"
+            ]
+          },
+          {
+            "group": "Endpoints",
+            "pages": [
+              "api/auth",
+              "api/inventory",
+              "api/sales",
+              "api/analytics",
+              "api/alerts",
+              "api/users",
+              "api/customers",
+              "api/suppliers",
+              "api/brands",
+              "api/categories"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Inventory management with real-time stock tracking",
+    "Sales processing with multiple payment methods",
+    "Analytics and reporting with custom date ranges",
+    "Automated alerts for low stock and important events",
+    "User authentication with role-based access control",
+    "Supplier and brand management",
+    "Customer tracking and history",
+    "Multi-user support for administrators and employees"
+  ],
+  "publicApiSurface": [
+    "POST /auth/login - User authentication",
+    "POST /auth/register - User registration",
+    "POST /auth/logout - User logout",
+    "GET /auth/verify - Verify authentication token",
+    "POST /auth/recover - Password recovery",
+    "GET /inventory - Get products with filters",
+    "POST /inventory - Create new product",
+    "PUT /inventory/:id - Update product",
+    "DELETE /inventory/:id - Delete product",
+    "GET /sales - Get sales with filters",
+    "POST /sales - Create new sale",
+    "GET /sales/:id - Get specific sale",
+    "PUT /sales/:id/status - Update sale status",
+    "GET /sales/reports/summary - Get sales summary report",
+    "GET /sales/products/search - Search products for sale",
+    "GET /sales/users/vendedores - Get list of sellers",
+    "GET /analysis/sales - Get sales analytics",
+    "GET /analysis/sales/summary - Get executive summary",
+    "GET /analysis/sales/custom - Get custom period analytics",
+    "GET /alerts - Get alerts",
+    "POST /alerts - Create alert",
+    "PUT /alerts/:id - Update alert"
+  ]
+}
