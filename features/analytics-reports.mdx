@@ -1,0 +1,331 @@
+---
+title: 'Analytics & reports'
+description: 'Visualize sales trends, track performance, and generate business insights'
+icon: 'chart-line'
+---
+
+CEMAC provides comprehensive analytics and reporting to help you understand your business performance, identify trends, and make data-driven decisions.
+
+## Dashboard overview
+
+The analytics dashboard displays key metrics and visualizations:
+
+### Today's statistics
+
+Real-time metrics for the current day:
+
+<CardGroup cols={2}>
+  <Card title="Total sales" icon="dollar-sign">
+    Revenue generated today with percentage change from yesterday
+  </Card>
+  <Card title="Total orders" icon="receipt">
+    Number of transactions completed with daily trend
+  </Card>
+  <Card title="Products sold" icon="box">
+    Units sold across all products with comparison
+  </Card>
+  <Card title="New clients" icon="users">
+    First-time customers today with growth indicator
+  </Card>
+</CardGroup>
+
+<Note>
+Each metric shows a percentage change indicator (green for positive, red for negative) comparing today's performance to yesterday.
+</Note>
+
+## Sales analytics
+
+### Income chart
+
+Track daily revenue trends:
+
+<Accordion title="Chart details">
+  - **Type**: Line chart with area fill
+  - **Period**: Last 7 days
+  - **Updates**: Real-time as sales are processed
+  - **Color**: Green gradient for positive revenue
+</Accordion>
+
+**Insights you can gain:**
+- Identify high-performing days
+- Spot sales patterns and trends
+- Compare weekday vs weekend performance
+- Track revenue momentum
+
+### Annual revenue chart
+
+Visualize monthly revenue over time:
+
+<Accordion title="Chart details">
+  - **Type**: Bar chart
+  - **Period**: Last 6 months
+  - **Grouping**: Monthly totals
+  - **Color**: Purple bars matching brand theme
+</Accordion>
+
+**Business insights:**
+- Identify seasonal trends
+- Track month-over-month growth
+- Plan inventory for peak periods
+- Set realistic revenue targets
+
+<Tip>
+Compare current month performance to previous months to gauge whether you're on track to meet monthly goals.
+</Tip>
+
+### Expenses tracking
+
+Monitor daily expenses:
+
+<Accordion title="Chart details">
+  - **Type**: Line chart with area fill
+  - **Period**: Last 7 days
+  - **Calculation**: Estimated at 60% of revenue
+  - **Color**: Red gradient for expenses
+</Accordion>
+
+<Info>
+The expense chart provides an estimated view based on revenue. For precise expense tracking, integrate with your accounting system.
+</Info>
+
+## Inventory analytics
+
+### Stock status distribution
+
+Understand your inventory health at a glance:
+
+<Accordion title="Doughnut chart">
+  Displays three categories:
+  - **Stock available** (green): Products with adequate inventory
+  - **Low stock** (purple): Products below threshold
+  - **Out of stock** (light purple): Products with zero inventory
+</Accordion>
+
+**Actionable insights:**
+- Percentage of products in each status
+- Exact count of products per category
+- Visual alert for restocking needs
+
+### Product rotation analysis
+
+Analyze how frequently products sell:
+
+<Accordion title="Rotation categories">
+  - **Very frequent**: Fast-moving items
+  - **Frequent**: Regular sellers
+  - **Infrequent**: Slow-moving inventory
+</Accordion>
+
+**Use this data to:**
+- Optimize inventory levels
+- Identify bestsellers
+- Spot slow-moving products for promotions
+- Make smarter purchasing decisions
+
+<Warning>
+Slow-moving inventory ties up capital. Use rotation data to run promotions or adjust stock levels.
+</Warning>
+
+## Top products
+
+Identify your bestselling items:
+
+### Metrics tracked
+
+For each top product, view:
+- Product name
+- Units sold in the period
+- Revenue generated
+- Sales velocity
+
+### Sorting options
+
+View top products by:
+- **Sales volume**: Most units sold
+- **Revenue**: Highest revenue generated
+- **Growth rate**: Fastest-growing products
+
+<Tip>
+Use top products data to:
+- Ensure popular items are always in stock
+- Negotiate better prices for high-volume products
+- Create product bundles around bestsellers
+- Plan promotional campaigns
+</Tip>
+
+## Custom reports
+
+Generate reports for specific time periods:
+
+### Date range selection
+
+<Steps>
+  <Step title="Choose start date">
+    Select the beginning of your analysis period
+  </Step>
+  <Step title="Choose end date">
+    Select the end of your analysis period
+  </Step>
+  <Step title="Select grouping">
+    Group data by:
+    - **Daily**: Day-by-day breakdown
+    - **Weekly**: Week totals
+    - **Monthly**: Month totals
+  </Step>
+  <Step title="Generate report">
+    View customized charts and statistics
+  </Step>
+</Steps>
+
+### Report data included
+
+Custom reports show:
+- Revenue trends for the selected period
+- Transaction volume
+- Average order value
+- Product performance
+- Customer activity
+
+## Executive summary
+
+High-level business overview:
+
+### Current month performance
+
+<CardGroup cols={2}>
+  <Card title="Revenue" icon="money-bill-trend-up">
+    Total sales for the current month
+  </Card>
+  <Card title="Transactions" icon="list-check">
+    Number of sales completed
+  </Card>
+  <Card title="Average order" icon="calculator">
+    Mean transaction value
+  </Card>
+  <Card title="Growth rate" icon="chart-line">
+    Percentage change from last month
+  </Card>
+</CardGroup>
+
+### Month-over-month comparison
+
+Compare current month to previous month:
+- Revenue growth/decline percentage
+- Transaction count change
+- Average order value trend
+- Customer acquisition metrics
+
+<Check>
+Green indicators show positive growth, red indicators show decline. Use this data to quickly assess business health.
+</Check>
+
+## Data refresh
+
+### Automatic updates
+
+Analytics data refreshes automatically:
+- **Today's stats**: Real-time updates after each sale
+- **Charts**: Update every 5 minutes
+- **Inventory metrics**: Update on stock changes
+- **Top products**: Recalculate hourly
+
+### Manual refresh
+
+Click the **Refresh Analytics** button to:
+- Force immediate data reload
+- Ensure latest numbers after bulk operations
+- Verify data after system updates
+
+## Chart interactions
+
+All charts support interactive features:
+
+### Hover tooltips
+
+Hover over any data point to see:
+- Exact values
+- Formatted currency amounts
+- Date/time information
+- Percentage breakdowns
+
+### Responsive design
+
+Charts adapt to:
+- Different screen sizes
+- Mobile devices
+- Print layouts
+- Export formats
+
+<Note>
+Charts maintain aspect ratio and readability across all devices for consistent analysis experience.
+</Note>
+
+## Export capabilities
+
+Export analytics data for external use:
+
+### Export formats
+
+<CardGroup cols={3}>
+  <Card title="CSV" icon="file-csv">
+    Spreadsheet-compatible format
+  </Card>
+  <Card title="PDF" icon="file-pdf">
+    Formatted reports with charts
+  </Card>
+  <Card title="Image" icon="image">
+    Chart screenshots
+  </Card>
+</CardGroup>
+
+### What gets exported
+
+- Raw data tables
+- Chart visualizations
+- Summary statistics
+- Date range and filters applied
+
+## Performance indicators
+
+Key business metrics calculated automatically:
+
+### Formulas used
+
+```
+Average Order Value = Total Revenue ÷ Number of Orders
+
+Growth Rate = ((Current Period - Previous Period) ÷ Previous Period) × 100
+
+Inventory Turnover = Units Sold ÷ Average Inventory
+
+Sales Velocity = Units Sold ÷ Days in Period
+```
+
+### Benchmarking
+
+Compare your metrics against:
+- Your historical performance
+- Industry averages (when available)
+- Custom goals you set
+
+<Tip>
+Set monthly revenue and transaction goals in settings. The analytics dashboard will show your progress toward those targets.
+</Tip>
+
+## Permissions
+
+Analytics access by user role:
+
+| View | Admin | Employee |
+|------|-------|----------|
+| Dashboard overview | ✓ | ✓ |
+| Sales charts | ✓ | ✓ |
+| Inventory analytics | ✓ | ✓ |
+| Top products | ✓ | ✓ |
+| Custom reports | ✓ | ✓ |
+| Export data | ✓ | ✗ |
+| Executive summary | ✓ | ✗ |
+
+<Info>
+Employees can view all analytics to understand business performance, but only admins can export data or access detailed financial summaries.
+</Info>

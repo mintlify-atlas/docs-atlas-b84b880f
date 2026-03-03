@@ -1,0 +1,286 @@
+---
+title: 'Brands API'
+description: 'Brand management endpoints'
+---
+
+## Get All Brands
+
+Retrieve a list of all brands with optional filtering and pagination.
+
+<CodeGroup>
+```bash cURL
+curl -X GET "https://cemac-api.vercel.app/brands?search=&page=1&limit=50" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+</CodeGroup>
+
+**Authentication:** Required (Bearer Token)
+
+**Method:** `GET`
+
+**Endpoint:** `/brands`
+
+### Query Parameters
+
+<ParamField query="search" type="string">
+  Search term to filter brands by name
+</ParamField>
+
+<ParamField query="page" type="number">
+  Page number for pagination
+</ParamField>
+
+<ParamField query="limit" type="number">
+  Number of brands per page
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="brands" type="array">
+  Array of brand objects
+  <Expandable title="Brand object properties">
+    <ResponseField name="id" type="string">
+      Unique brand identifier
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Brand name
+    </ResponseField>
+    <ResponseField name="description" type="string">
+      Description of the brand
+    </ResponseField>
+    <ResponseField name="productCount" type="number">
+      Number of products associated with this brand
+    </ResponseField>
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp of creation
+    </ResponseField>
+    <ResponseField name="updatedAt" type="string">
+      ISO 8601 timestamp of last update
+    </ResponseField>
+    <ResponseField name="createdBy" type="string">
+      User ID who created the brand
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="total" type="number">
+  Total number of brands
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Response message
+</ResponseField>
+
+---
+
+## Create Brand
+
+Create a new brand.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://cemac-api.vercel.app/brands \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "TechPro",
+    "description": "Premium technology products and accessories"
+  }'
+```
+</CodeGroup>
+
+**Authentication:** Required (Bearer Token)
+
+**Method:** `POST`
+
+**Endpoint:** `/brands`
+
+### Request Body
+
+<ParamField body="name" type="string" required>
+  Brand name (max 100 characters)
+</ParamField>
+
+<ParamField body="description" type="string">
+  Description of the brand (max 500 characters)
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the brand was created successfully
+</ResponseField>
+
+<ResponseField name="brand" type="object">
+  Created brand object
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success message
+</ResponseField>
+
+---
+
+## Update Brand
+
+Update an existing brand's information.
+
+<CodeGroup>
+```bash cURL
+curl -X PUT https://cemac-api.vercel.app/brands/BRAND_ID \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "TechPro Elite",
+    "description": "Premium technology products, accessories, and solutions"
+  }'
+```
+</CodeGroup>
+
+**Authentication:** Required (Bearer Token)
+
+**Method:** `PUT`
+
+**Endpoint:** `/brands/{brandId}`
+
+### Path Parameters
+
+<ParamField path="brandId" type="string" required>
+  Unique identifier of the brand
+</ParamField>
+
+### Request Body
+
+<ParamField body="name" type="string">
+  Updated brand name (max 100 characters)
+</ParamField>
+
+<ParamField body="description" type="string">
+  Updated description (max 500 characters)
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the brand was updated successfully
+</ResponseField>
+
+<ResponseField name="brand" type="object">
+  Updated brand object
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success message
+</ResponseField>
+
+---
+
+## Delete Brand
+
+Delete a brand from the system.
+
+<CodeGroup>
+```bash cURL
+curl -X DELETE https://cemac-api.vercel.app/brands/BRAND_ID \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+</CodeGroup>
+
+**Authentication:** Required (Bearer Token)
+
+**Method:** `DELETE`
+
+**Endpoint:** `/brands/{brandId}`
+
+### Path Parameters
+
+<ParamField path="brandId" type="string" required>
+  Unique identifier of the brand to delete
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the brand was deleted successfully
+</ResponseField>
+
+<ResponseField name="brandId" type="string">
+  ID of the deleted brand
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success message
+</ResponseField>
+
+---
+
+## Get Brand Statistics
+
+Retrieve detailed statistics for a specific brand.
+
+<CodeGroup>
+```bash cURL
+curl -X GET https://cemac-api.vercel.app/brands/BRAND_ID/stats \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+</CodeGroup>
+
+**Authentication:** Required (Bearer Token)
+
+**Method:** `GET`
+
+**Endpoint:** `/brands/{brandId}/stats`
+
+### Path Parameters
+
+<ParamField path="brandId" type="string" required>
+  Unique identifier of the brand
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="brand" type="object">
+  Brand details
+</ResponseField>
+
+<ResponseField name="stats" type="object">
+  Brand statistics
+  <Expandable title="Statistics properties">
+    <ResponseField name="productCount" type="number">
+      Total number of products
+    </ResponseField>
+    <ResponseField name="activeProducts" type="number">
+      Number of active products
+    </ResponseField>
+    <ResponseField name="limitedProducts" type="number">
+      Number of products with limited stock
+    </ResponseField>
+    <ResponseField name="unlimitedProducts" type="number">
+      Number of products with unlimited stock
+    </ResponseField>
+    <ResponseField name="totalStock" type="number">
+      Total stock quantity across all products
+    </ResponseField>
+    <ResponseField name="lowStockProducts" type="number">
+      Number of products with low stock
+    </ResponseField>
+    <ResponseField name="averagePrice" type="number">
+      Average price of products from this brand
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Response message
+</ResponseField>

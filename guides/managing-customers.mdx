@@ -1,0 +1,359 @@
+---
+title: Managing Customers
+description: Track and manage customer information and purchase history in CEMAC
+---
+
+## Overview
+
+The customer management system helps you maintain customer records, track purchase history, and provide personalized service to frequent buyers.
+
+## Customer Information in CEMAC
+
+CEMAC tracks customer data to:
+- Identify frequent buyers
+- Track purchase history
+- Provide personalized service
+- Analyze customer behavior
+- Support marketing efforts
+
+## Adding Customers During Sales
+
+The most common way to add customers is during the sales process:
+
+<Steps>
+  <Step title="Navigate to Sales">
+    Go to the Ventas (Sales) page from the sidebar.
+  </Step>
+  
+  <Step title="Enter customer name">
+    In the "Cliente" field at the top of the sales form, type the customer's name.
+  </Step>
+  
+  <Step title="Complete the sale">
+    As you process the sale, the customer information is automatically saved with the transaction.
+  </Step>
+</Steps>
+
+<Info>
+Customer records are created automatically when you enter a name during checkout. The system uses `customerService.js` to manage customer data.
+</Info>
+
+## Searching for Existing Customers
+
+<Steps>
+  <Step title="Use search in sales">
+    When entering a customer name in the sales form, the system searches existing customers.
+  </Step>
+  
+  <Step title="Select from results">
+    If the customer exists, select from the autocomplete suggestions.
+  </Step>
+  
+  <Step title="Auto-fill information">
+    The system may auto-fill customer details based on previous purchases.
+  </Step>
+</Steps>
+
+The search uses `customerService.searchCustomers(query)` to find matches in real-time.
+
+## Viewing Customer Details
+
+While CEMAC doesn't have a dedicated customer management page in the current interface, you can access customer information through:
+
+### Sales History
+
+<Steps>
+  <Step title="Access sales history">
+    Go to the Ventas page and view the history panel on the left.
+  </Step>
+  
+  <Step title="Search by customer name">
+    Use the "Buscar cliente..." search box to find all sales for a specific customer.
+  </Step>
+  
+  <Step title="Review purchase history">
+    Click on individual sales to see:
+    - Purchase dates
+    - Products bought
+    - Amounts spent
+    - Payment methods used
+  </Step>
+</Steps>
+
+### Analytics Insights
+
+<Steps>
+  <Step title="Go to Analytics">
+    Navigate to the Análisis page.
+  </Step>
+  
+  <Step title="Check new customers metric">
+    The "Nuevos clientes" KPI shows how many unique customers made purchases today.
+  </Step>
+  
+  <Step title="View customer trends">
+    The percentage change indicates if you're gaining or losing customers.
+  </Step>
+</Steps>
+
+## Customer Data Management
+
+### Creating Customers Programmatically
+
+For API integrations or batch imports, use:
+
+```javascript
+await customerService.createCustomer({
+  firstName: "Juan",
+  lastName: "Pérez",
+  email: "juan.perez@email.com",
+  phone: "+52 55 1234 5678",
+  address: "Av. Principal 123, CDMX"
+});
+```
+
+### Updating Customer Information
+
+```javascript
+await customerService.updateCustomer(customerId, {
+  email: "new.email@example.com",
+  phone: "+52 55 9876 5432"
+});
+```
+
+### Retrieving Customer Details
+
+```javascript
+// Get specific customer with purchase history
+const customer = await customerService.getCustomerById(customerId);
+
+// Get all customers with filters
+const customers = await customerService.getCustomers({
+  page: 1,
+  limit: 50,
+  search: "García",
+  sortBy: "firstName",
+  sortOrder: "asc"
+});
+```
+
+## Customer Purchase History
+
+When viewing a customer's record via the API, you'll see:
+
+- **Personal Information**: Name, email, phone, address
+- **Purchase History**: List of all sales transactions
+  - Date of purchase
+  - Products bought
+  - Quantities
+  - Total amount
+  - Payment method
+- **Statistics**: 
+  - Total purchases
+  - Total spent
+  - Average order value
+  - Last purchase date
+
+## Best Practices for Customer Management
+
+### During Sales
+
+<Info>
+Consistent customer naming helps with accurate tracking and reporting.
+</Info>
+
+- **Ask for full names**: Get complete customer names for better records
+- **Verify spelling**: Confirm spelling to avoid duplicate records
+- **Update contact info**: If a customer provides updated details, note them
+- **Track preferences**: Use the notes field to record customer preferences
+- **Identify regulars**: Recognize frequent customers for better service
+
+### Data Quality
+
+- **Avoid duplicates**: Search before creating new customer records
+- **Use consistent formatting**: 
+  - Names: "Juan Pérez" not "juan perez" or "JUAN PEREZ"
+  - Phone: "+52 55 1234 5678" format consistently
+  - Email: Always lowercase
+- **Keep it current**: Update information when customers notify changes
+- **Merge duplicates**: Contact administrator to merge duplicate customer records
+
+### Privacy and Security
+
+<Warning>
+Customer data is sensitive. Always handle it with care and respect privacy.
+</Warning>
+
+- **Protect customer information**: Don't share customer details publicly
+- **Secure access**: Only authorized staff should access customer records
+- **Respect privacy**: Only collect necessary information
+- **Data retention**: Follow company policy on how long to keep customer data
+- **Consent**: Ensure customers know their data is being collected
+
+## Using Customer Data for Business
+
+### Identify Frequent Customers
+
+<Steps>
+  <Step title="Review sales history">
+    Use the sales search to find customers with multiple transactions.
+  </Step>
+  
+  <Step title="Offer loyalty benefits">
+    Provide special discounts or perks to frequent buyers.
+  </Step>
+  
+  <Step title="Track preferences">
+    Note what products regulars prefer to ensure stock availability.
+  </Step>
+</Steps>
+
+### Customer Segmentation
+
+Analyze customer data to identify:
+
+- **High-value customers**: Those who spend the most
+- **Frequent buyers**: Those who purchase often
+- **Seasonal customers**: Those who buy at specific times
+- **Product preferences**: What different customer types prefer
+
+### Improve Service
+
+<Steps>
+  <Step title="Track purchase patterns">
+    Note what products customers buy together.
+  </Step>
+  
+  <Step title="Personalize recommendations">
+    Suggest products based on previous purchases.
+  </Step>
+  
+  <Step title="Anticipate needs">
+    Stock items that your regular customers typically buy.
+  </Step>
+</Steps>
+
+## Common Workflows
+
+### First-Time Customer
+
+<Steps>
+  <Step title="Process the sale normally">
+    Enter the customer's name in the Cliente field.
+  </Step>
+  
+  <Step title="Ask for contact info">
+    If appropriate, ask for email or phone for future promotions.
+  </Step>
+  
+  <Step title="Complete transaction">
+    The customer record is created automatically.
+  </Step>
+</Steps>
+
+### Returning Customer
+
+<Steps>
+  <Step title="Start typing name">
+    Begin entering the customer's name in the sales form.
+  </Step>
+  
+  <Step title="Select from autocomplete">
+    Choose the customer from the dropdown suggestions.
+  </Step>
+  
+  <Step title="Review history">
+    Optionally check their previous purchases to provide better service.
+  </Step>
+  
+  <Step title="Process sale">
+    Complete the transaction as usual.
+  </Step>
+</Steps>
+
+### Updating Customer Details
+
+<Steps>
+  <Step title="Customer provides new info">
+    When a customer mentions a new phone number or address.
+  </Step>
+  
+  <Step title="Note the change">
+    Write it down or add to the sale notes.
+  </Step>
+  
+  <Step title="Update the record">
+    Contact your administrator or use the API to update customer information.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+### Cannot Find Customer
+
+**Possible causes**:
+- Name spelled differently
+- Customer hasn't purchased before
+- Duplicate record under different spelling
+
+**Solutions**:
+1. Try different name variations
+2. Search by partial name
+3. Create new record if truly first purchase
+4. Contact administrator about potential duplicates
+
+### Duplicate Customer Records
+
+**Reason**: Same customer entered with different names or spellings.
+
+**Prevention**:
+- Always search before entering a new customer
+- Use consistent name formatting
+- Ask customers how they prefer their name recorded
+
+**Solution**:
+- Contact administrator to merge duplicate records
+- Choose one record as primary
+- Update future sales to use the correct record
+
+### Customer Information Incorrect
+
+**Solutions**:
+1. Verify correct information with customer
+2. Request administrator update the record
+3. Add correct info in sale notes until updated
+
+## Future Customer Features
+
+CEMAC's customer management capabilities can be extended with:
+
+- Dedicated customer management page
+- Customer loyalty programs
+- Email marketing integration
+- Birthday and anniversary tracking
+- Customer tags and categories
+- Detailed purchase analytics per customer
+- Customer communication history
+
+## Technical Reference
+
+Customer operations use the `customerService.js` service:
+
+- **Get customers**: `customerService.getCustomers(params)`
+  - Params: `page`, `limit`, `search`, `sortBy`, `sortOrder`
+- **Search customers**: `customerService.searchCustomers(query)`
+  - Real-time autocomplete search
+- **Get customer**: `customerService.getCustomerById(customerId)`
+  - Returns customer with purchase history
+- **Create customer**: `customerService.createCustomer(customerData)`
+  - Required: `firstName`, `lastName`
+  - Optional: `email`, `phone`, `address`
+- **Update customer**: `customerService.updateCustomer(customerId, data)`
+- **Delete customer**: `customerService.deleteCustomer(customerId)`
+
+All operations require authentication and use the API endpoint:
+`https://cemac-api.vercel.app/customers`
+
+<Note>
+Customer data is automatically associated with sales records, creating a complete purchase history for each customer.
+</Note>

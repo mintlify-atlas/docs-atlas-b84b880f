@@ -1,0 +1,293 @@
+---
+title: 'Authentication'
+description: 'API endpoints for user authentication and session management'
+---
+
+## Login
+
+<api method="POST" path="/auth/login" auth="none">
+  Authenticate a user and receive an access token.
+</api>
+
+### Request Body
+
+<ParamField body="email" type="string" required>
+  User's email address
+</ParamField>
+
+<ParamField body="password" type="string" required>
+  User's password
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the login was successful
+</ResponseField>
+
+<ResponseField name="token" type="string">
+  JWT authentication token
+</ResponseField>
+
+<ResponseField name="user" type="object">
+  User information object
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success or error message
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X POST https://cemac-api.vercel.app/auth/login \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "yourpassword"
+  }'
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "user_123",
+    "email": "user@example.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "role": "vendedor"
+  },
+  "message": "Login exitoso"
+}
+```
+
+### Error Codes
+
+- `400` - Invalid credentials or missing parameters
+- `401` - Authentication failed
+- `500` - Internal server error
+
+---
+
+## Logout
+
+<api method="POST" path="/auth/logout" auth="bearer">
+  Logout the current user and invalidate the session.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if logout was successful
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Confirmation message
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X POST https://cemac-api.vercel.app/auth/logout \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "message": "Logout exitoso"
+}
+```
+
+---
+
+## Verify Authentication
+
+<api method="GET" path="/auth/verify" auth="bearer">
+  Verify if the current token is valid and get user information.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the token is valid
+</ResponseField>
+
+<ResponseField name="user" type="object">
+  Authenticated user information
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET https://cemac-api.vercel.app/auth/verify \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Accept: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "user": {
+    "id": "user_123",
+    "email": "user@example.com",
+    "role": "vendedor"
+  }
+}
+```
+
+### Error Codes
+
+- `401` - Invalid or expired token
+- `500` - Internal server error
+
+---
+
+## Password Recovery
+
+<api method="POST" path="/auth/recover" auth="none">
+  Request a password reset for a user account.
+</api>
+
+### Request Body
+
+<ParamField body="email" type="string" required>
+  Email address of the account to recover
+</ParamField>
+
+<ParamField body="isAdmin" type="boolean" default="false">
+  Indicates if this is an admin account recovery request
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was processed
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Confirmation or error message
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X POST https://cemac-api.vercel.app/auth/recover \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "isAdmin": false
+  }'
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "message": "Se ha enviado un correo con instrucciones para restablecer la contraseña"
+}
+```
+
+### Error Codes
+
+- `400` - Missing email parameter
+- `404` - Email not found
+- `500` - Internal server error
+
+---
+
+## Register
+
+<api method="POST" path="/auth/register" auth="none">
+  Register a new user account.
+</api>
+
+### Request Body
+
+<ParamField body="email" type="string" required>
+  User's email address
+</ParamField>
+
+<ParamField body="password" type="string" required>
+  User's password
+</ParamField>
+
+<ParamField body="firstName" type="string" required>
+  User's first name
+</ParamField>
+
+<ParamField body="lastName" type="string" required>
+  User's last name
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if registration was successful
+</ResponseField>
+
+<ResponseField name="user" type="object">
+  Created user information
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success or error message
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X POST https://cemac-api.vercel.app/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "newuser@example.com",
+    "password": "securepassword",
+    "firstName": "Jane",
+    "lastName": "Smith"
+  }'
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "user": {
+    "id": "user_456",
+    "email": "newuser@example.com",
+    "firstName": "Jane",
+    "lastName": "Smith"
+  },
+  "message": "Usuario registrado exitosamente"
+}
+```
+
+### Error Codes
+
+- `400` - Invalid input or missing required fields
+- `409` - Email already exists
+- `500` - Internal server error

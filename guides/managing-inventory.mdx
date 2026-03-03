@@ -1,0 +1,304 @@
+---
+title: Managing Inventory
+description: Complete guide to adding, editing, and organizing products in CEMAC
+---
+
+## Overview
+
+The inventory management system allows you to track all your stationery products, manage stock levels, organize by categories and brands, and maintain supplier relationships.
+
+## Accessing Inventory
+
+<Steps>
+  <Step title="Navigate to Inventory">
+    Click "Inventario" in the sidebar navigation to open the inventory management page.
+  </Step>
+  
+  <Step title="View product list">
+    The main table displays all products with columns for:
+    - Product name and image
+    - Category
+    - Brand
+    - Supplier
+    - Price (with promotional price if applicable)
+    - Stock level
+    - Availability status
+  </Step>
+</Steps>
+
+## Adding a New Product
+
+<Steps>
+  <Step title="Click Add Product">
+    Click the purple "Agregar Producto" button in the top-right corner of the inventory page.
+  </Step>
+  
+  <Step title="Enter basic information">
+    In the product form, fill in:
+    - **Nombre del Producto**: Product name (e.g., "Libretas de cuadros chicos")
+    - **Descripción**: Detailed product description (optional)
+  </Step>
+  
+  <Step title="Set pricing and availability">
+    Configure pricing:
+    - **Precio**: Regular selling price
+    - **Precio Promocional**: Optional promotional/sale price
+    - **Disponibilidad**: 
+      - Check "Ilimitado" for unlimited stock (default)
+      - Uncheck and enter a number for limited stock items
+  </Step>
+  
+  <Step title="Configure box management (optional)">
+    For products sold in boxes/cases:
+    - Enable the "Gestión por cajas" toggle
+    - **Piezas por caja**: Number of units per box (e.g., 24)
+    - **Cajas en stock**: Number of boxes available
+    - System automatically calculates total stock
+  </Step>
+  
+  <Step title="Add product codes">
+    Enter identification codes:
+    - **Código de barras**: Barcode number (e.g., "7501234567890")
+    - **Código proveedor**: Supplier's product code (e.g., "PROV-2024-001")
+  </Step>
+  
+  <Step title="Upload product image">
+    - Click "Seleccionar imagen" in the image upload area
+    - Choose an image file from your computer
+    - Preview will appear before saving
+  </Step>
+  
+  <Step title="Select category">
+    - Choose a category from the dropdown menu
+    - Or click "Agregar nueva categoría" to create a new one
+  </Step>
+  
+  <Step title="Select brand">
+    - Choose the product brand from the dropdown
+    - Or click "Agregar nueva marca" to add a new brand
+  </Step>
+  
+  <Step title="Select supplier">
+    - Choose the supplier from the dropdown menu
+    - Or click "Agregar nuevo proveedor" to create a new supplier
+  </Step>
+  
+  <Step title="Save the product">
+    Click "Guardar" to create the product. The system calls `inventoryService.createProduct()` to save your data.
+  </Step>
+</Steps>
+
+<Note>
+Product images are uploaded to Cloudinary for reliable storage and fast delivery.
+</Note>
+
+## Editing Products
+
+<Steps>
+  <Step title="Find the product">
+    Use the search bar or filters to locate the product you want to edit.
+  </Step>
+  
+  <Step title="Click Edit">
+    In the "Acciones" column, click the edit icon (pencil) for the product.
+  </Step>
+  
+  <Step title="Modify information">
+    Update any fields in the product form. All fields from product creation are available for editing.
+  </Step>
+  
+  <Step title="Save changes">
+    Click "Guardar" to update the product via `inventoryService.updateProduct()`.
+  </Step>
+</Steps>
+
+## Filtering and Searching
+
+### Quick Search
+
+<Steps>
+  <Step title="Use the header search bar">
+    Type a product name in the search bar at the top of the page to search across all products.
+  </Step>
+</Steps>
+
+### Advanced Filters
+
+The filter panel provides multiple filtering options:
+
+<Steps>
+  <Step title="Filter by category">
+    Select a category from the "Categoría" dropdown to show only products in that category.
+  </Step>
+  
+  <Step title="Filter by brand">
+    Choose a brand from the "Marca" dropdown.
+  </Step>
+  
+  <Step title="Filter by supplier">
+    Select a supplier from the "Proveedor" dropdown.
+  </Step>
+  
+  <Step title="Filter by price range">
+    Choose a price range:
+    - $0 - $50
+    - $50 - $100
+    - $100 - $500
+    - $500+
+  </Step>
+  
+  <Step title="Filter by availability">
+    Select availability status:
+    - **Stock limitado**: Products with limited quantity
+    - **Stock ilimitado**: Products marked as unlimited
+    - **Agotado**: Out of stock products
+  </Step>
+  
+  <Step title="Sort results">
+    Choose sorting from the "Ordenar por" dropdown:
+    - Nombre (A-Z / Z-A)
+    - Precio (menor a mayor / mayor a menor)
+    - Stock (menor a mayor / mayor a menor)
+    - Más recientes / Más antiguos
+  </Step>
+  
+  <Step title="Clear filters">
+    Click "Limpiar filtros" to reset all filters and show all products.
+  </Step>
+</Steps>
+
+## Managing Categories
+
+<Steps>
+  <Step title="Open category management">
+    Click the "Categorías" button at the top of the inventory page.
+  </Step>
+  
+  <Step title="View categories">
+    The modal displays all existing categories with product counts.
+  </Step>
+  
+  <Step title="Create a category">
+    - Click "Nueva" in the category modal
+    - Enter the category name and description
+    - Click "Guardar"
+  </Step>
+  
+  <Step title="Edit a category">
+    - Click the edit icon next to a category
+    - Modify the name or description
+    - Save changes
+  </Step>
+  
+  <Step title="Delete a category">
+    - Click the delete icon next to a category
+    - Confirm the deletion
+    - Note: Categories with products cannot be deleted
+  </Step>
+</Steps>
+
+## Managing Brands
+
+<Steps>
+  <Step title="Open brand management">
+    Click the "Marcas" button at the top of the inventory page.
+  </Step>
+  
+  <Step title="Create a brand">
+    - Click "Nueva" in the brands modal
+    - Enter brand name and optional description
+    - Click "Guardar"
+    - System calls `brandsService.createBrand()`
+  </Step>
+  
+  <Step title="Edit or delete brands">
+    Use the action icons next to each brand to edit or remove brands from the system.
+  </Step>
+</Steps>
+
+## Managing Suppliers
+
+<Steps>
+  <Step title="Open supplier management">
+    Click the "Proveedores" button at the top of the inventory page.
+  </Step>
+  
+  <Step title="Create a supplier">
+    - Click "Nuevo" in the suppliers modal
+    - Fill in supplier information:
+      - Name (required)
+      - Contact name
+      - Email
+      - Phone
+      - Address
+      - Description
+    - Click "Guardar"
+    - System calls `suppliersService.createSupplier()`
+  </Step>
+  
+  <Step title="Manage supplier status">
+    Toggle the "Proveedor activo" checkbox when creating or editing to activate/deactivate suppliers.
+  </Step>
+</Steps>
+
+## Deleting Products
+
+<Warning>
+Deleting a product is permanent and cannot be undone.
+</Warning>
+
+<Steps>
+  <Step title="Locate the product">
+    Find the product you want to delete in the inventory table.
+  </Step>
+  
+  <Step title="Click delete">
+    Click the delete icon (trash can) in the "Acciones" column.
+  </Step>
+  
+  <Step title="Confirm deletion">
+    Confirm you want to delete the product. The system calls `inventoryService.deleteProduct()`.
+  </Step>
+</Steps>
+
+## Pagination
+
+When you have many products:
+
+<Steps>
+  <Step title="Navigate pages">
+    Use the pagination controls at the bottom of the table:
+    - Click "Anterior" to go to the previous page
+    - Click "Siguiente" to go to the next page
+    - Click page numbers to jump to specific pages
+  </Step>
+  
+  <Step title="View page info">
+    The pagination footer shows "Página X de Y" to indicate your current position.
+  </Step>
+</Steps>
+
+## Best Practices
+
+<Info>
+Regularly update stock levels and remove discontinued products to maintain accurate inventory.
+</Info>
+
+- **Use clear product names**: Make products easy to identify
+- **Add detailed descriptions**: Help employees identify products correctly
+- **Upload quality images**: Good photos improve product recognition
+- **Keep pricing current**: Update promotional prices when sales end
+- **Organize with categories**: Proper categorization makes finding products easier
+- **Track suppliers**: Maintain accurate supplier information for reordering
+- **Use barcodes**: Enter barcode data for faster checkout
+
+## Technical Reference
+
+Inventory operations use the `inventoryService.js` service:
+
+- **Get products**: `inventoryService.getProducts(filters)`
+- **Create product**: `inventoryService.createProduct(productData)`
+- **Update product**: `inventoryService.updateProduct(productId, updateData)`
+- **Delete product**: `inventoryService.deleteProduct(productId)`
+
+All requests require authentication tokens and communicate with `https://cemac-api.vercel.app/inventory`.

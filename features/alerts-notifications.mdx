@@ -1,0 +1,374 @@
+---
+title: 'Alerts & notifications'
+description: 'Stay informed with automated stock alerts and priority notifications'
+icon: 'bell'
+---
+
+CEMAC's intelligent alert system monitors your inventory and business operations, automatically notifying you of critical events that need attention.
+
+## Alert types
+
+The system generates alerts for various scenarios:
+
+### Stock alerts
+
+<CardGroup cols={2}>
+  <Card title="Low stock" icon="box-open" color="#f59e0b">
+    Triggered when product quantity falls below minimum threshold
+  </Card>
+  <Card title="Out of stock" icon="box" color="#ef4444">
+    Triggered when product inventory reaches zero
+  </Card>
+  <Card title="Critical stock" icon="triangle-exclamation" color="#dc2626">
+    Triggered for high-priority products with very low inventory
+  </Card>
+  <Card title="Overstock" icon="boxes-stacked" color="#3b82f6">
+    Triggered when inventory exceeds maximum threshold
+  </Card>
+</CardGroup>
+
+### Business alerts
+
+<Accordion title="Price changes">
+  Notifications when supplier announces price increases or changes
+</Accordion>
+
+<Accordion title="Seasonal demand">
+  Alerts for products approaching peak season based on historical data
+</Accordion>
+
+<Accordion title="System notifications">
+  Important system updates, maintenance, or configuration changes
+</Accordion>
+
+## Alert priorities
+
+Alerts are categorized by urgency:
+
+| Priority | Color | Response Time | Use Case |
+|----------|-------|---------------|----------|
+| Critical | Red | Immediate | Zero stock on bestseller |
+| Urgent | Dark Orange | Within 1 hour | Stock below 20% for high-demand item |
+| High | Orange | Same day | Stock below threshold |
+| Medium | Yellow | Within 2 days | Approaching low stock |
+| Low | Green | When convenient | General notices |
+
+<Note>
+The system automatically assigns priority based on factors like product sales velocity, current stock level, and historical demand.
+</Note>
+
+## Alert dashboard
+
+### View all alerts
+
+The alerts dashboard displays:
+
+<Steps>
+  <Step title="Alert cards">
+    Each alert shows:
+    - Priority badge (color-coded)
+    - Status indicator
+    - Alert message
+    - Product information
+    - Timestamp
+  </Step>
+  <Step title="Quick stats">
+    Header shows:
+    - Total alert count
+    - Pending alerts
+    - Alerts in progress
+    - Resolved today
+  </Step>
+  <Step title="Filter controls">
+    Refine alerts by:
+    - Priority level
+    - Status
+    - Date range
+    - Product category
+  </Step>
+</Steps>
+
+### Alert statuses
+
+Track alert lifecycle:
+
+<Accordion title="Pending">
+  New alerts that haven't been reviewed. Appears with yellow badge.
+</Accordion>
+
+<Accordion title="In progress">
+  Alerts being actively addressed. Marked with blue badge.
+</Accordion>
+
+<Accordion title="Resolved">
+  Completed alerts. Shows green badge with resolution timestamp.
+</Accordion>
+
+<Accordion title="Dismissed">
+  Alerts marked as not requiring action. Gray badge.
+</Accordion>
+
+## Alert actions
+
+Respond to alerts directly from the dashboard:
+
+### Quick actions
+
+<CardGroup cols={2}>
+  <Card title="Mark as read" icon="check">
+    Change status from Pending to Resolved
+  </Card>
+  <Card title="Mark in progress" icon="spinner">
+    Indicate you're working on the issue
+  </Card>
+  <Card title="Dismiss alert" icon="xmark">
+    Remove from active alerts (but keep in history)
+  </Card>
+  <Card title="View product" icon="arrow-up-right-from-square">
+    Jump directly to the product details page
+  </Card>
+</CardGroup>
+
+### Add notes
+
+Document your actions:
+- Click on any alert to open details modal
+- Add notes about:
+  - Actions taken
+  - Orders placed
+  - Expected resolution date
+  - Contact with suppliers
+- Notes are saved with alert history
+
+<Tip>
+Adding detailed notes helps track recurring issues and improves future response times.
+</Tip>
+
+## Filtering and search
+
+### Filter by priority
+
+View alerts by urgency level:
+- All priorities
+- Critical only
+- Urgent and above
+- High and above
+- Medium and low
+
+### Filter by status
+
+Refine by alert state:
+- Pending (needs attention)
+- In progress (being handled)
+- Resolved (completed)
+- All statuses
+
+### Filter by date range
+
+Focus on specific timeframes:
+- Today
+- This week
+- This month
+- Custom date range
+
+### Search alerts
+
+Find specific alerts by:
+- Product name
+- Alert message text
+- Product category
+- Alert ID
+
+<Info>
+Combine multiple filters to create custom alert views. For example, "Critical + Pending + This Week" shows your most urgent action items.
+</Info>
+
+## Alert settings
+
+### Configure thresholds
+
+Customize when alerts are generated:
+
+<Steps>
+  <Step title="Stock thresholds">
+    Set minimum quantities for:
+    - Low stock warning (e.g., 20 units)
+    - Critical stock alert (e.g., 5 units)
+    - Overstock warning (e.g., 500 units)
+  </Step>
+  <Step title="Category-specific thresholds">
+    Different thresholds for different product categories:
+    - Office supplies: 50 units
+    - Notebooks: 100 units  
+    - Writing instruments: 200 units
+  </Step>
+  <Step title="Product-specific overrides">
+    Set custom thresholds for individual high-priority products
+  </Step>
+</Steps>
+
+<Warning>
+Thresholds that are too high generate excessive alerts. Too low and you risk stockouts. Adjust based on your sales velocity.
+</Warning>
+
+### Notification preferences
+
+Control how you receive alerts:
+
+<Accordion title="In-app notifications">
+  - Badge on alerts icon in navigation
+  - Toast notifications for critical alerts
+  - Dashboard widget
+</Accordion>
+
+<Accordion title="Email notifications">
+  - Daily digest of pending alerts
+  - Immediate emails for critical alerts
+  - Weekly summary report
+</Accordion>
+
+<Accordion title="Notification frequency">
+  - Real-time (as they occur)
+  - Batched hourly
+  - Daily summary only
+</Accordion>
+
+## Automated alert generation
+
+The system automatically creates alerts:
+
+### Stock monitoring
+
+Every hour, the system:
+1. Checks inventory levels for all products
+2. Compares current stock to configured thresholds
+3. Generates alerts for products below minimum
+4. Assigns priority based on sales velocity
+5. Notifies relevant users
+
+### Manual generation
+
+Admins can manually trigger alert generation:
+- Click **Generate Alerts** button in alerts dashboard
+- Useful after bulk inventory updates
+- Forces immediate system-wide check
+- Shows count of new alerts created
+
+<Check>
+Manual generation is helpful after importing inventory from suppliers or conducting physical counts.
+</Check>
+
+## Alert details
+
+Click any alert to view comprehensive information:
+
+### Product information
+
+- Product name and image
+- Current stock level
+- Minimum threshold setting
+- Product category
+- Supplier information
+
+### Alert metadata
+
+- Alert ID (unique identifier)
+- Alert type (low stock, out of stock, etc.)
+- Priority level
+- Created timestamp
+- Last updated timestamp
+- Assigned user (if any)
+
+### Action history
+
+- Timeline of status changes
+- Notes added by users
+- Resolution details
+- Links to related orders or purchases
+
+## Bulk actions
+
+Manage multiple alerts at once:
+
+### Mark all as read
+
+Click **Mark All Read** to:
+- Change all pending alerts to resolved
+- Clear alert badge counters
+- Keep alerts in history for reference
+
+<Info>
+This is useful at the end of day to clear processed alerts while keeping the historical record.
+</Info>
+
+### Filter and bulk update
+
+1. Apply filters to show specific alerts
+2. Select multiple alerts with checkboxes
+3. Choose bulk action:
+   - Mark selected as read
+   - Mark selected in progress
+   - Dismiss selected
+   - Assign to user
+
+## Alert history
+
+Access historical alert data:
+
+### View past alerts
+
+- All alerts are preserved indefinitely
+- Search by date range
+- Filter by resolution status
+- Export alert history to CSV
+
+### Analytics on alerts
+
+View statistics:
+- Most frequently alerted products
+- Average time to resolution
+- Alert volume trends
+- Stockout frequency
+
+<Tip>
+Alert analytics help identify systemic issues. If the same products generate repeated low-stock alerts, consider increasing your standard order quantity.
+</Tip>
+
+## Permissions
+
+Alert management by user role:
+
+| Action | Admin | Employee |
+|--------|-------|----------|
+| View alerts | ✓ | ✓ |
+| Mark as read | ✓ | ✓ |
+| Mark in progress | ✓ | ✓ |
+| Add notes | ✓ | ✓ |
+| Dismiss alerts | ✓ | ✗ |
+| Configure thresholds | ✓ | ✗ |
+| Generate alerts manually | ✓ | ✗ |
+| Delete alerts | ✓ | ✗ |
+| Access alert history | ✓ | Limited |
+
+<Check>
+Employees can view and work on alerts, but only admins can configure thresholds or dismiss alerts permanently.
+</Check>
+
+## Best practices
+
+Maximize the effectiveness of alerts:
+
+<CardGroup cols={2}>
+  <Card title="Review daily" icon="calendar-check">
+    Check alerts at least once per day to stay on top of inventory issues
+  </Card>
+  <Card title="Prioritize critical" icon="exclamation">
+    Always address critical and urgent alerts within the recommended timeframe
+  </Card>
+  <Card title="Add context" icon="message">
+    Document actions taken in alert notes for future reference
+  </Card>
+  <Card title="Adjust thresholds" icon="sliders">
+    Refine thresholds based on actual sales patterns and lead times
+  </Card>
+</CardGroup>

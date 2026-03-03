@@ -1,0 +1,340 @@
+---
+title: "Installation"
+description: "Set up CEMAC for local development or production deployment"
+---
+
+## Prerequisites
+
+Before installing CEMAC, ensure you have the following:
+
+- **Node.js** version 18 or higher
+- **npm** (included with Node.js)
+- **Git** for version control
+- **Firebase account** for authentication and database services
+
+<Note>
+  CEMAC uses Firebase for authentication and Firestore for the database. You'll need to create a Firebase project and obtain configuration credentials.
+</Note>
+
+## Installation steps
+
+<Steps>
+  <Step title="Clone the repository">
+    Clone the CEMAC repository to your local machine:
+
+    ```bash
+    git clone https://github.com/Brayan-chan/cemac.git
+    cd cemac
+    ```
+  </Step>
+
+  <Step title="Install dependencies">
+    Install all required npm packages:
+
+    ```bash
+    npm install
+    ```
+
+    This will install the following core dependencies:
+
+    <CodeGroup>
+      ```json package.json
+      {
+        "dependencies": {
+          "cors": "^2.8.5",
+          "dotenv": "^17.2.2",
+          "express": "^5.1.0",
+          "firebase": "^12.3.0",
+          "firebase-admin": "^13.5.0",
+          "nodemon": "^3.1.10"
+        }
+      }
+      ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Configure Firebase">
+    Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com) and enable:
+
+    - **Authentication** - Enable Email/Password authentication
+    - **Cloud Firestore** - Create a Firestore database
+
+    Then, obtain your Firebase configuration credentials from the project settings.
+  </Step>
+
+  <Step title="Set up environment variables">
+    Create a `.env` file in the root directory with your Firebase configuration:
+
+    ```bash .env
+    PORT=3000
+    FIREBASE_API_KEY=your_api_key
+    FIREBASE_AUTH_DOMAIN=your_auth_domain
+    FIREBASE_PROJECT_ID=your_project_id
+    FIREBASE_STORAGE_BUCKET=your_storage_bucket
+    FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+    FIREBASE_APP_ID=your_app_id
+    ```
+
+    <Warning>
+      Never commit your `.env` file to version control. Add it to your `.gitignore` file to keep your credentials secure.
+    </Warning>
+  </Step>
+
+  <Step title="Start the development server">
+    Run the development server with automatic restart on file changes:
+
+    ```bash
+    npm run dev
+    ```
+
+    Or start the production server:
+
+    ```bash
+    npm start
+    ```
+
+    The server will start on `http://localhost:3000` (or your configured PORT).
+
+    ```javascript server/server.js
+    const PORT = process.env.PORT || 3000;
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Servidor CEMAC corriendo en: http://localhost:${PORT}`);
+      console.log(`📡 API backend externa: https://cemac-api.vercel.app/`);
+    });
+    ```
+  </Step>
+
+  <Step title="Verify installation">
+    Open your browser and navigate to:
+
+    - `http://localhost:3000` - Main login page
+    - `http://localhost:3000/api/status` - Server status endpoint
+
+    You should see the CEMAC login page and be able to check the server status:
+
+    ```json Response from /api/status
+    {
+      "success": true,
+      "message": "Servidor CEMAC funcionando correctamente",
+      "timestamp": "2026-03-03T21:00:00.000Z",
+      "version": "1.0.0",
+      "routes": {
+        "auth": "/auth/*",
+        "frontend": "/",
+        "dashboard": "/views/dashboard/*",
+        "status": "/api/status"
+      }
+    }
+    ```
+  </Step>
+</Steps>
+
+## Project structure
+
+Understand the CEMAC codebase organization:
+
+```
+cemac/
+├── config/             # Firebase and database configuration
+├── controllers/        # API request handlers
+├── middlewares/        # Authentication and request middleware
+├── public/             # Frontend assets
+│   ├── css/           # Stylesheets
+│   ├── js/            # Client-side JavaScript
+│   │   ├── components/    # Reusable UI components
+│   │   ├── controllers/   # Frontend controllers
+│   │   ├── middlewares/   # Client-side middleware
+│   │   ├── modules/       # Feature modules (login, inventory, sales)
+│   │   ├── services/      # API service clients
+│   │   └── utils/         # Utility functions
+│   └── views/         # HTML templates
+│       ├── admin/         # Admin-only pages
+│       └── dashboard/     # Main dashboard views
+├── routes/             # Express route definitions
+├── server/            # Server configuration
+└── utils/             # Backend utilities
+```
+
+## Available routes
+
+Once installed, CEMAC provides these routes:
+
+### Frontend routes
+
+- `GET /` - Login page (admin)
+- `GET /views/employee-login.html` - Employee login page
+- `GET /views/dashboard/inicio.html` - Main dashboard
+- `GET /views/dashboard/inventario.html` - Inventory management
+- `GET /views/dashboard/ventas.html` - Sales tracking
+- `GET /views/dashboard/alertas.html` - Alerts and notifications
+- `GET /views/dashboard/analisis.html` - Analytics dashboard
+
+### API routes
+
+```javascript routes/authRoutes.js
+// Authentication endpoints
+POST /auth/login          // User authentication
+POST /auth/logout         // End user session
+GET  /auth/verify         // Verify auth token
+POST /auth/recover        // Password recovery
+GET  /auth/status         // Auth system status
+```
+
+<Note>
+  CEMAC uses a hybrid architecture: the frontend runs on your local server, while the backend API is deployed on Vercel at `https://cemac-api.vercel.app/`.
+</Note>
+
+## Development workflow
+
+### Running in development mode
+
+```bash
+npm run dev
+```
+
+This uses `nodemon` to automatically restart the server when you make changes to any file.
+
+### Running in production mode
+
+```bash
+npm start
+```
+
+This uses Node.js watch mode for automatic restarts without the overhead of nodemon.
+
+## Environment configuration
+
+CEMAC automatically detects the environment based on the hostname:
+
+```javascript public/js/services/authService.js
+configureAPIEndpoint() {
+  const hostname = window.location.hostname;
+  const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+  
+  if (isLocalhost) {
+    // Development: use local proxy server
+    this.baseURL = window.location.origin;
+    this.environment = 'development';
+  } else {
+    // Production: use deployed API
+    this.baseURL = 'https://cemac-api.vercel.app';
+    this.environment = 'production';
+  }
+}
+```
+
+### Local development
+
+When running on `localhost`, CEMAC uses the local server as a proxy to the external API.
+
+### Production deployment
+
+In production, CEMAC communicates directly with the Vercel-deployed API.
+
+## Database setup
+
+CEMAC uses Cloud Firestore with the following collections:
+
+- `users` - User accounts and profiles
+- `products` - Inventory items
+- `sales` - Transaction records
+- `customers` - Customer information
+- `categories` - Product categories
+- `brands` - Product brands
+- `suppliers` - Supplier information
+- `alerts` - System notifications and alerts
+
+<Tip>
+  Configure Firestore security rules to restrict access based on authentication tokens. Ensure that only authenticated users can read/write data.
+</Tip>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Port already in use">
+    If port 3000 is already in use, either:
+
+    1. Stop the process using port 3000
+    2. Change the PORT in your `.env` file
+
+    ```bash
+    # Find process using port 3000
+    lsof -i :3000
+    
+    # Kill the process
+    kill -9 <PID>
+    ```
+  </Accordion>
+
+  <Accordion title="Firebase authentication errors">
+    Verify that:
+
+    - Your Firebase credentials in `.env` are correct
+    - Email/Password authentication is enabled in Firebase Console
+    - Firebase project is active and not suspended
+
+    Check the browser console for detailed error messages.
+  </Accordion>
+
+  <Accordion title="API connection timeout">
+    If you see timeout errors when logging in:
+
+    - Check that `https://cemac-api.vercel.app/` is accessible
+    - Verify your internet connection
+    - Check if the API is experiencing downtime
+
+    The authentication controller has a 10-second timeout:
+
+    ```javascript
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    ```
+  </Accordion>
+
+  <Accordion title="Missing dependencies">
+    If you encounter module errors, try:
+
+    ```bash
+    # Remove node_modules and reinstall
+    rm -rf node_modules package-lock.json
+    npm install
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Quickstart guide"
+    icon="rocket"
+    href="/quickstart"
+  >
+    Learn how to use CEMAC for the first time.
+  </Card>
+
+  <Card
+    title="API reference"
+    icon="code"
+    href="/api-reference/introduction"
+  >
+    Explore the complete API documentation.
+  </Card>
+
+  <Card
+    title="User management"
+    icon="users"
+    href="/features/users"
+  >
+    Set up user accounts and permissions.
+  </Card>
+
+  <Card
+    title="Deployment guide"
+    icon="cloud"
+    href="/guides/deployment"
+  >
+    Deploy CEMAC to production.
+  </Card>
+</CardGroup>

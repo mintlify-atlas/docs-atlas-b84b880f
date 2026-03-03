@@ -1,0 +1,179 @@
+---
+title: 'Environment Variables'
+description: 'Configure environment variables for CEMAC application'
+---
+
+## Overview
+
+CEMAC uses environment variables to configure Firebase integration and server settings. These variables must be set before running the application in both development and production environments.
+
+## Required Variables
+
+<Warning>
+  Never commit your `.env` file to version control. Always keep your Firebase credentials secure and use environment-specific values.
+</Warning>
+
+### Server Configuration
+
+<ParamField path="PORT" type="number" default="3000">
+  The port number on which the CEMAC server will listen for incoming requests.
+  
+  **Example:** `3000`
+</ParamField>
+
+### Firebase Configuration
+
+CEMAC integrates with Firebase for authentication and database services. The following variables are required to connect to your Firebase project:
+
+<ParamField path="FIREBASE_API_KEY" type="string" required>
+  Your Firebase project's API key. This is used to authenticate requests to Firebase services.
+  
+  **Location:** Firebase Console > Project Settings > General > Your apps > Web app
+  
+  **Example:** `AIzaSyC1234567890abcdefghijklmnopqrstuv`
+</ParamField>
+
+<ParamField path="FIREBASE_AUTH_DOMAIN" type="string" required>
+  The authentication domain for your Firebase project.
+  
+  **Format:** `{project-id}.firebaseapp.com`
+  
+  **Example:** `cemac-prod.firebaseapp.com`
+</ParamField>
+
+<ParamField path="FIREBASE_PROJECT_ID" type="string" required>
+  Your Firebase project's unique identifier.
+  
+  **Location:** Firebase Console > Project Settings > General > Project ID
+  
+  **Example:** `cemac-prod`
+</ParamField>
+
+<ParamField path="FIREBASE_STORAGE_BUCKET" type="string" required>
+  The Cloud Storage bucket for your Firebase project.
+  
+  **Format:** `{project-id}.appspot.com`
+  
+  **Example:** `cemac-prod.appspot.com`
+</ParamField>
+
+<ParamField path="FIREBASE_MESSAGING_SENDER_ID" type="string" required>
+  The sender ID for Firebase Cloud Messaging.
+  
+  **Location:** Firebase Console > Project Settings > Cloud Messaging > Sender ID
+  
+  **Example:** `123456789012`
+</ParamField>
+
+<ParamField path="FIREBASE_APP_ID" type="string" required>
+  Your Firebase web app's unique identifier.
+  
+  **Location:** Firebase Console > Project Settings > General > Your apps > App ID
+  
+  **Example:** `1:123456789012:web:abcdef1234567890`
+</ParamField>
+
+## Setup Instructions
+
+<Steps>
+  <Step title="Create .env file">
+    Create a `.env` file in the root directory of your project:
+    
+    ```bash
+    touch .env
+    ```
+  </Step>
+  
+  <Step title="Add environment variables">
+    Copy the following template and replace the placeholder values with your actual Firebase credentials:
+    
+    ```env
+    PORT=3000
+    FIREBASE_API_KEY=your_api_key
+    FIREBASE_AUTH_DOMAIN=your_auth_domain
+    FIREBASE_PROJECT_ID=your_project_id
+    FIREBASE_STORAGE_BUCKET=your_storage_bucket
+    FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+    FIREBASE_APP_ID=your_app_id
+    ```
+  </Step>
+  
+  <Step title="Verify configuration">
+    Ensure the `.env` file is listed in your `.gitignore` to prevent accidental commits:
+    
+    ```bash
+    cat .gitignore | grep .env
+    ```
+    
+    If not present, add it:
+    
+    ```bash
+    echo ".env" >> .gitignore
+    ```
+  </Step>
+  
+  <Step title="Test the configuration">
+    Start the development server to verify the environment variables are loaded correctly:
+    
+    ```bash
+    npm run dev
+    ```
+    
+    The server should start without errors and display:
+    
+    ```
+    🚀 Servidor CEMAC corriendo en: http://localhost:3000
+    ```
+  </Step>
+</Steps>
+
+## Production Environment
+
+For production deployments (e.g., Vercel), set environment variables through your hosting platform's dashboard:
+
+<Steps>
+  <Step title="Access environment settings">
+    Navigate to your project settings in your hosting platform.
+  </Step>
+  
+  <Step title="Add variables">
+    Add each environment variable as a key-value pair. Ensure you select the appropriate environment (Production, Preview, Development).
+  </Step>
+  
+  <Step title="Redeploy">
+    Trigger a new deployment to apply the environment variables.
+  </Step>
+</Steps>
+
+<Warning>
+  Use different Firebase projects for development and production to prevent data conflicts and ensure security isolation.
+</Warning>
+
+## Validation
+
+You can verify your environment configuration by checking the server logs when the application starts:
+
+```bash
+npm start
+```
+
+Look for successful initialization messages. If Firebase credentials are incorrect, you'll see authentication errors in the console.
+
+## Troubleshooting
+
+### Server won't start
+- Verify all required variables are set in `.env`
+- Check for typos in variable names (they are case-sensitive)
+- Ensure no extra spaces around `=` signs in `.env`
+
+### Firebase authentication fails
+- Verify your Firebase API key is correct
+- Check that your Firebase project is active
+- Ensure the auth domain matches your Firebase project
+
+### Port already in use
+- Change the `PORT` value to an available port
+- Or stop the process using the current port:
+  ```bash
+  lsof -ti:3000 | xargs kill
+  ```

@@ -1,0 +1,165 @@
+---
+title: 'API Overview'
+description: 'Introduction to the CEMAC API, base URLs, and response formats'
+---
+
+## Introduction
+
+The CEMAC API is a RESTful API that provides authentication and user management services for the CEMAC platform. The API is built with Express.js and deployed on Vercel.
+
+## Base URL
+
+The CEMAC API has different base URLs depending on your environment:
+
+**Production:**
+```
+https://cemac-api.vercel.app
+```
+
+**Development (Local):**
+```
+http://localhost:3000
+```
+
+The client automatically detects the environment and uses the appropriate base URL:
+
+```javascript
+configureAPIEndpoint() {
+    const hostname = window.location.hostname;
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+    
+    if (isLocalhost) {
+        this.baseURL = window.location.origin;
+        this.environment = 'development';
+    } else {
+        this.baseURL = 'https://cemac-api.vercel.app';
+        this.environment = 'production';
+    }
+}
+```
+
+## Response Format
+
+All API responses follow a consistent JSON format:
+
+### Success Response
+
+```json
+{
+  "success": true,
+  "message": "Operation completed successfully",
+  "data": {
+    // Response data here
+  }
+}
+```
+
+### Error Response
+
+```json
+{
+  "success": false,
+  "error": "Error message describing what went wrong"
+}
+```
+
+### Authentication Success Response
+
+```json
+{
+  "success": true,
+  "message": "Login exitoso",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "email": "user@example.com",
+    "firstName": "John",
+    "lastName": "Doe"
+  }
+}
+```
+
+## HTTP Status Codes
+
+The API uses standard HTTP status codes:
+
+| Status Code | Description |
+|-------------|-------------|
+| `200` | Success - Request completed successfully |
+| `400` | Bad Request - Invalid request parameters |
+| `401` | Unauthorized - Authentication required or failed |
+| `404` | Not Found - Resource not found |
+| `408` | Request Timeout - Request took too long to complete |
+| `500` | Internal Server Error - Server encountered an error |
+| `501` | Not Implemented - Feature not yet implemented |
+| `504` | Gateway Timeout - External API timeout |
+
+## Request Headers
+
+All API requests should include the following headers:
+
+```http
+Content-Type: application/json
+Accept: application/json
+```
+
+For authenticated endpoints, include the Authorization header:
+
+```http
+Authorization: Bearer <your-jwt-token>
+```
+
+## CORS Configuration
+
+The API supports Cross-Origin Resource Sharing (CORS) and includes appropriate headers in responses. In development mode, credentials are included in requests:
+
+```javascript
+const requestOptions = {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+    },
+    mode: 'cors'
+};
+
+// Include credentials in development
+if (environment === 'development') {
+    requestOptions.credentials = 'include';
+}
+```
+
+<Note>
+The API automatically handles environment-specific configurations. You don't need to manually configure CORS or credentials when using the AuthService.
+</Note>
+
+## Rate Limiting
+
+<Warning>
+External API requests have a 10-second timeout to prevent long-running requests. If the API doesn't respond within this time, you'll receive a 408 Request Timeout error.
+</Warning>
+
+## API Status
+
+You can check the API status using the status endpoints:
+
+**Server Status:**
+```bash
+GET /api/status
+```
+
+**Authentication System Status:**
+```bash
+GET /auth/status
+```
+
+Both endpoints return information about available routes and system health.
+
+## Available Routes
+
+The CEMAC API currently provides the following route groups:
+
+- **Authentication** (`/auth/*`) - User authentication and session management
+- **API Status** (`/api/status`) - Server health and route information
+- **Frontend** (`/`) - Static file serving and dashboard views
+
+For detailed information about authentication endpoints, see the [Authentication](/api/authentication) page.

@@ -1,0 +1,191 @@
+---
+title: Authentication
+description: Learn how to log in and manage your CEMAC account
+---
+
+## Overview
+
+CEMAC provides secure authentication for both administrators and employees. Each role has different access levels and capabilities within the system.
+
+## User Roles
+
+CEMAC supports two types of users:
+
+- **Administrators**: Full access to all system features including user management, inventory, sales, and analytics
+- **Employees**: Access to sales processing and basic inventory viewing
+
+## Administrator Login
+
+<Steps>
+  <Step title="Navigate to the login page">
+    Open your browser and go to the CEMAC application URL. You'll see the administrator login page by default.
+  </Step>
+  
+  <Step title="Enter your credentials">
+    - **Usuario**: Enter your administrator username
+    - **Contraseña**: Enter your password
+    
+    The system uses JWT (JSON Web Tokens) for secure authentication via the `authService.js` service.
+  </Step>
+  
+  <Step title="Click Ingresar">
+    Click the blue "Ingresar" button to log in. The system will:
+    - Validate your credentials against the API at `https://cemac-api.vercel.app/auth/login`
+    - Store your authentication token in localStorage
+    - Redirect you to the dashboard upon successful authentication
+  </Step>
+</Steps>
+
+<Note>
+The authentication service automatically detects whether you're in development or production mode and adjusts the API endpoint accordingly.
+</Note>
+
+## Employee Login
+
+<Steps>
+  <Step title="Access the employee login page">
+    From the administrator login page, click "Iniciar como Empleado" at the bottom of the form.
+  </Step>
+  
+  <Step title="Enter employee credentials">
+    - **Correo**: Enter your employee email address
+    - **Contraseña**: Enter your employee password
+  </Step>
+  
+  <Step title="Sign in">
+    Click "Iniciar" to access the employee dashboard with limited permissions.
+  </Step>
+</Steps>
+
+## Password Recovery
+
+### For Administrators
+
+<Steps>
+  <Step title="Click forgot password">
+    On the administrator login page, click "¿Olvidaste tu contraseña?"
+  </Step>
+  
+  <Step title="Enter your email">
+    Provide the email address associated with your administrator account.
+  </Step>
+  
+  <Step title="Request reset">
+    The system calls `authService.requestPasswordReset(email, true)` to send a password reset link to your email.
+  </Step>
+  
+  <Step title="Check your email">
+    Follow the instructions in the email to reset your password.
+  </Step>
+</Steps>
+
+### For Employees
+
+<Steps>
+  <Step title="Click forgot password">
+    On the employee login page, click "¿Olvidaste tu contraseña?"
+  </Step>
+  
+  <Step title="Enter your email">
+    Provide your registered employee email address.
+  </Step>
+  
+  <Step title="Request reset">
+    The system calls `authService.requestPasswordReset(email, false)` for employee accounts.
+  </Step>
+  
+  <Step title="Follow email instructions">
+    Check your email and follow the password reset link.
+  </Step>
+</Steps>
+
+## Session Management
+
+### Authentication Token
+
+CEMAC uses bearer token authentication:
+
+```javascript
+// Token is stored in localStorage
+const token = localStorage.getItem('authToken');
+const user = localStorage.getItem('user');
+```
+
+### Session Verification
+
+The system automatically verifies your session when:
+- Loading protected pages
+- Making API requests
+- Refreshing the browser
+
+If your token is invalid or expired, you'll be redirected to the login page.
+
+### Logout
+
+<Steps>
+  <Step title="Click your user menu">
+    In the top-right corner of any page, click on your user profile icon.
+  </Step>
+  
+  <Step title="Select logout">
+    Click "Cerrar Sesión" from the dropdown menu.
+  </Step>
+  
+  <Step title="Confirm logout">
+    The system will:
+    - Call `authService.logout()` to invalidate your token on the server
+    - Clear localStorage data (authToken and user)
+    - Redirect you to the login page
+  </Step>
+</Steps>
+
+## Security Best Practices
+
+<Warning>
+Always log out when using shared computers or devices.
+</Warning>
+
+- **Never share credentials**: Each user should have their own account
+- **Use strong passwords**: Combine letters, numbers, and special characters
+- **Log out properly**: Always use the logout button instead of just closing the browser
+- **Report suspicious activity**: Contact your administrator if you notice unauthorized access
+
+## Troubleshooting
+
+### Login Failed
+
+If you receive an authentication error:
+1. Verify your username/email and password are correct
+2. Check that Caps Lock is not enabled
+3. Clear your browser cache and try again
+4. Contact your system administrator if the issue persists
+
+### Session Expired
+
+If you see "Sesión expirada o inválida":
+1. This is normal after extended inactivity
+2. Simply log in again with your credentials
+3. Your work will be preserved on the server
+
+### Cannot Access Password Reset
+
+If password reset emails aren't arriving:
+1. Check your spam/junk folder
+2. Verify the email address is correct
+3. Wait a few minutes for delivery
+4. Contact your administrator for manual password reset
+
+## Technical Reference
+
+The authentication system is powered by:
+- **Service**: `authService.js` - Handles all authentication operations
+- **API Base URL**: `https://cemac-api.vercel.app`
+- **Endpoints**:
+  - `POST /auth/login` - User login
+  - `POST /auth/logout` - User logout  
+  - `GET /auth/verify` - Token verification
+  - `POST /auth/recover` - Password recovery
+
+<Info>
+Development mode automatically uses a local proxy server instead of the production API.
+</Info>

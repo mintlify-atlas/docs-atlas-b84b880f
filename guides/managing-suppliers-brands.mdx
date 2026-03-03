@@ -1,0 +1,447 @@
+---
+title: Managing Suppliers and Brands
+description: Organize and maintain supplier and brand information in CEMAC
+---
+
+## Overview
+
+The Suppliers and Brands module helps you organize product metadata by managing brand information and maintaining supplier contacts and details.
+
+## Accessing Suppliers and Brands
+
+<Steps>
+  <Step title="Navigate to the page">
+    Click "Marcas y Proveedores" in the sidebar navigation to open the management page.
+  </Step>
+  
+  <Step title="Choose a tab">
+    The page has two tabs:
+    - **Marcas** (Brands): Manage product brands
+    - **Proveedores** (Suppliers): Manage supplier information
+  </Step>
+</Steps>
+
+## Managing Brands
+
+### Viewing Brands
+
+<Steps>
+  <Step title="Access the Brands tab">
+    Click "Marcas" in the navigation tabs (active by default).
+  </Step>
+  
+  <Step title="Review brand cards">
+    Brands are displayed in a grid layout showing:
+    - Brand name
+    - Description
+    - Number of associated products
+    - Creation date
+    - Action buttons (Edit/Delete)
+  </Step>
+  
+  <Step title="View statistics">
+    The stats area shows total number of brands in the system.
+  </Step>
+</Steps>
+
+### Searching Brands
+
+<Steps>
+  <Step title="Use the search bar">
+    Type in the "Buscar marcas..." search field to filter brands by name.
+  </Step>
+  
+  <Step title="View filtered results">
+    The grid updates in real-time as you type, showing only matching brands.
+  </Step>
+</Steps>
+
+### Creating a New Brand
+
+<Steps>
+  <Step title="Click Nueva Marca">
+    Click the purple "Nueva Marca" button in the top-right corner.
+  </Step>
+  
+  <Step title="Fill in brand information">
+    In the modal form:
+    - **Nombre de la Marca** (required): Enter the brand name (e.g., "Samsung", "Apple", "HP")
+    - **Descripción** (optional): Add a description (e.g., "Productos electrónicos Samsung de alta calidad")
+  </Step>
+  
+  <Step title="Save the brand">
+    - Click "Guardar" to create the brand
+    - System calls `brandsService.createBrand(brandData)`
+    - The new brand appears in the grid
+    - Modal closes automatically
+  </Step>
+</Steps>
+
+<Note>
+Brand names should be unique to avoid confusion when assigning products.
+</Note>
+
+### Editing a Brand
+
+<Steps>
+  <Step title="Find the brand">
+    Locate the brand you want to edit using the search or scrolling through the grid.
+  </Step>
+  
+  <Step title="Click Edit">
+    Click the edit icon (pencil) on the brand card.
+  </Step>
+  
+  <Step title="Modify information">
+    Update the brand name or description in the modal form.
+  </Step>
+  
+  <Step title="Save changes">
+    Click "Guardar" to update the brand via `brandsService.updateBrand(brandId, updateData)`.
+  </Step>
+</Steps>
+
+### Deleting a Brand
+
+<Warning>
+Brands associated with products cannot be deleted. Remove products from the brand first.
+</Warning>
+
+<Steps>
+  <Step title="Click Delete">
+    Click the delete icon (trash) on the brand card.
+  </Step>
+  
+  <Step title="Confirm deletion">
+    A confirmation dialog appears asking you to confirm.
+  </Step>
+  
+  <Step title="Complete deletion">
+    - Click "Eliminar" to confirm
+    - System calls `brandsService.deleteBrand(brandId)`
+    - Brand is removed from the grid
+  </Step>
+</Steps>
+
+### Viewing Brand Statistics
+
+Click on a brand to view detailed statistics:
+
+- Total products under the brand
+- Active vs. inactive products
+- Limited vs. unlimited stock products
+- Total stock quantity
+- Low stock product count
+- Average product price
+
+Data retrieved via `brandsService.getBrandStats(brandId)`.
+
+## Managing Suppliers
+
+### Viewing Suppliers
+
+<Steps>
+  <Step title="Switch to Proveedores tab">
+    Click "Proveedores" in the navigation tabs.
+  </Step>
+  
+  <Step title="Review supplier list">
+    Suppliers are displayed in a list/card format showing:
+    - Supplier name
+    - Contact person
+    - Email and phone
+    - Address
+    - Number of products
+    - Active/inactive status
+  </Step>
+  
+  <Step title="Filter by status">
+    Check "Incluir inactivos" to show inactive suppliers in the list.
+  </Step>
+</Steps>
+
+### Searching Suppliers
+
+<Steps>
+  <Step title="Use the search bar">
+    Type in the "Buscar proveedores..." field to filter suppliers.
+  </Step>
+  
+  <Step title="Search by multiple fields">
+    Search works across:
+    - Supplier name
+    - Contact name
+    - Email
+    - Phone number
+  </Step>
+</Steps>
+
+### Creating a New Supplier
+
+<Steps>
+  <Step title="Click Nuevo Proveedor">
+    Click the purple "Nuevo Proveedor" button.
+  </Step>
+  
+  <Step title="Enter required information">
+    Fill in the form fields:
+    - **Nombre del Proveedor** (required): Company name (e.g., "Distribuidora Tecnología S.A.")
+  </Step>
+  
+  <Step title="Add contact details">
+    Enter optional but recommended information:
+    - **Persona de Contacto**: Contact person name (e.g., "Juan Pérez")
+    - **Email**: Contact email (e.g., "ventas@proveedor.com")
+    - **Teléfono**: Phone number (e.g., "+52 55 1234 5678")
+  </Step>
+  
+  <Step title="Add location and description">
+    - **Dirección**: Physical address
+    - **Descripción**: Additional details about the supplier
+  </Step>
+  
+  <Step title="Set active status">
+    Check or uncheck "Proveedor activo" to set the initial status.
+  </Step>
+  
+  <Step title="Save the supplier">
+    - Click "Guardar"
+    - System calls `suppliersService.createSupplier(supplierData)`
+    - New supplier appears in the list
+  </Step>
+</Steps>
+
+<Info>
+Include complete contact information to make reordering easier.
+</Info>
+
+### Editing a Supplier
+
+<Steps>
+  <Step title="Find the supplier">
+    Use search or browse the list to locate the supplier.
+  </Step>
+  
+  <Step title="Click Edit">
+    Click the edit icon on the supplier card.
+  </Step>
+  
+  <Step title="Update information">
+    Modify any fields in the form:
+    - Company name
+    - Contact details
+    - Address
+    - Description
+    - Active status
+  </Step>
+  
+  <Step title="Save changes">
+    Click "Guardar" to update via `suppliersService.updateSupplier(supplierId, updateData)`.
+  </Step>
+</Steps>
+
+### Deactivating a Supplier
+
+Instead of deleting, you can deactivate suppliers:
+
+<Steps>
+  <Step title="Edit the supplier">
+    Click the edit icon for the supplier.
+  </Step>
+  
+  <Step title="Uncheck active status">
+    Uncheck the "Proveedor activo" checkbox.
+  </Step>
+  
+  <Step title="Save changes">
+    The supplier is now inactive but remains in the system for historical records.
+  </Step>
+</Steps>
+
+<Note>
+Inactive suppliers don't appear in product creation dropdowns but are still linked to existing products.
+</Note>
+
+### Deleting a Supplier
+
+<Warning>
+Suppliers with associated products cannot be deleted. Reassign products first or deactivate instead.
+</Warning>
+
+<Steps>
+  <Step title="Click Delete">
+    Click the delete icon on the supplier card.
+  </Step>
+  
+  <Step title="Confirm deletion">
+    Confirm the deletion in the dialog.
+  </Step>
+  
+  <Step title="Complete deletion">
+    System calls `suppliersService.deleteSupplier(supplierId)` to remove the supplier.
+  </Step>
+</Steps>
+
+### Viewing Supplier Statistics
+
+Click on a supplier to view:
+
+- Total products from this supplier
+- Active product count
+- Stock distribution (limited vs. unlimited)
+- Total inventory from supplier
+- Low stock items
+- Average product price
+
+Accessed via `suppliersService.getSupplierStats(supplierId)`.
+
+## Refreshing Data
+
+<Steps>
+  <Step title="Click Actualizar">
+    Click the "Actualizar" button in the header to refresh all data.
+  </Step>
+  
+  <Step title="Wait for reload">
+    The system fetches latest information for both brands and suppliers.
+  </Step>
+</Steps>
+
+## Best Practices
+
+### For Brands
+
+- **Use official names**: Enter brands exactly as they appear officially
+- **Add descriptions**: Help staff identify what each brand represents
+- **Keep it current**: Remove obsolete brands when no longer carrying them
+- **Avoid duplicates**: Check existing brands before creating new ones
+- **Be consistent**: Use the same naming convention (e.g., "HP" not "Hewlett-Packard")
+
+### For Suppliers
+
+<Info>
+Maintain accurate supplier information for efficient reordering and relationship management.
+</Info>
+
+- **Complete contact info**: Always include email and phone
+- **Update regularly**: Keep contact details current
+- **Add notes**: Use description field for payment terms, lead times, etc.
+- **Mark inactive properly**: Don't delete suppliers with historical orders
+- **Multiple contacts**: Add backup contact info in description
+- **Track performance**: Use description to note supplier reliability
+
+## Common Workflows
+
+### Adding Products from a New Supplier
+
+<Steps>
+  <Step title="Create the supplier">
+    First, add the new supplier with all contact details.
+  </Step>
+  
+  <Step title="Create brand(s)">
+    If the supplier carries new brands, add those brands.
+  </Step>
+  
+  <Step title="Add products">
+    Go to Inventory and create products, selecting the new supplier and brands.
+  </Step>
+</Steps>
+
+### Supplier Contact Update
+
+<Steps>
+  <Step title="Receive new contact info">
+    When a supplier changes contact details.
+  </Step>
+  
+  <Step title="Update immediately">
+    Edit the supplier record and update email, phone, or address.
+  </Step>
+  
+  <Step title="Verify the change">
+    Send a test email or call to confirm the new contact works.
+  </Step>
+</Steps>
+
+### Discontinuing a Brand
+
+<Steps>
+  <Step title="Check product count">
+    View brand statistics to see how many products use it.
+  </Step>
+  
+  <Step title="Update or remove products">
+    Either delete products or reassign them to a different brand.
+  </Step>
+  
+  <Step title="Delete the brand">
+    Once no products are associated, delete the brand.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+### Cannot Delete Brand/Supplier
+
+**Reason**: The brand/supplier has associated products.
+
+**Solution**:
+1. View the statistics to see product count
+2. Go to Inventory and filter by that brand/supplier
+3. Either delete those products or reassign them
+4. Return and delete the brand/supplier
+
+### Duplicate Brand Names
+
+**Reason**: Brand was created multiple times with slight variations.
+
+**Solution**:
+1. Identify the correct brand name
+2. Reassign all products to the correct brand
+3. Delete duplicate brands
+
+### Supplier Information Not Saving
+
+**Possible causes**:
+- Email format is invalid
+- Name field is empty (required)
+- Network connection issue
+
+**Solution**:
+1. Verify all required fields are filled
+2. Check email format (must include @ and domain)
+3. Retry saving
+4. Check browser console for errors
+
+## Technical Reference
+
+### Brands Service
+
+Operations use `brandsService.js`:
+
+- **Get brands**: `brandsService.getBrands(params)`
+  - Params: `search`, `page`, `limit`
+- **Create brand**: `brandsService.createBrand(brandData)`
+  - Required: `name`
+  - Optional: `description`
+- **Update brand**: `brandsService.updateBrand(brandId, updateData)`
+- **Delete brand**: `brandsService.deleteBrand(brandId)`
+- **Get stats**: `brandsService.getBrandStats(brandId)`
+
+### Suppliers Service
+
+Operations use `suppliersService.js`:
+
+- **Get suppliers**: `suppliersService.getSuppliers(params)`
+  - Params: `search`, `isActive`, `page`, `limit`
+- **Create supplier**: `suppliersService.createSupplier(supplierData)`
+  - Required: `name`
+  - Optional: `description`, `contactName`, `email`, `phone`, `address`
+- **Update supplier**: `suppliersService.updateSupplier(supplierId, updateData)`
+- **Delete supplier**: `suppliersService.deleteSupplier(supplierId)`
+- **Get stats**: `suppliersService.getSupplierStats(supplierId)`
+
+All operations require authentication and communicate with:
+- Brands: `https://cemac-api.vercel.app/brands`
+- Suppliers: `https://cemac-api.vercel.app/suppliers`

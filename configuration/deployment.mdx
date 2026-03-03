@@ -1,0 +1,350 @@
+---
+title: 'Deployment'
+description: 'Deploy CEMAC to production using Vercel'
+---
+
+## Overview
+
+CEMAC is optimized for deployment on Vercel, a cloud platform for static sites and serverless functions. This guide covers deploying both the frontend application and understanding the backend API architecture.
+
+## Architecture
+
+CEMAC uses a split architecture:
+
+- **Frontend**: Static files (HTML, CSS, JS) served from the `/public` directory
+- **Backend API**: Deployed separately at `https://cemac-api.vercel.app`
+- **Proxy Server**: Express server that routes requests and serves static files
+
+## Prerequisites
+
+- GitHub account
+- Vercel account (free tier available)
+- Firebase project configured (see [Firebase Setup](/configuration/firebase-setup))
+- Git installed locally
+
+## Deploying to Vercel
+
+<Steps>
+  <Step title="Prepare your repository">
+    Ensure your code is in a Git repository:
+    
+    ```bash
+    git init
+    git add .
+    git commit -m "Initial commit"
+    ```
+    
+    Push to GitHub:
+    
+    ```bash
+    git remote add origin https://github.com/your-username/cemac.git
+    git push -u origin main
+    ```
+  </Step>
+  
+  <Step title="Import project to Vercel">
+    1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
+    2. Click **Add New** > **Project**
+    3. Import your GitHub repository
+    4. Select the repository from the list
+  </Step>
+  
+  <Step title="Configure build settings">
+    Vercel will detect the project type. Verify these settings:
+    
+    - **Framework Preset**: Other
+    - **Build Command**: `echo 'No build needed'`
+    - **Output Directory**: `public`
+    - **Install Command**: `npm install`
+    
+    These settings match the `vercel.json` configuration in your project.
+  </Step>
+  
+  <Step title="Add environment variables">
+    In the Vercel project settings, add your environment variables:
+    
+    <Warning>
+      Never commit `.env` files to Git. Always add sensitive credentials through the Vercel dashboard.
+    </Warning>
+    
+    Navigate to **Settings** > **Environment Variables** and add:
+    
+    ```
+    PORT=3000
+    FIREBASE_API_KEY=your_api_key
+    FIREBASE_AUTH_DOMAIN=your_auth_domain
+    FIREBASE_PROJECT_ID=your_project_id
+    FIREBASE_STORAGE_BUCKET=your_storage_bucket
+    FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+    FIREBASE_APP_ID=your_app_id
+    ```
+    
+    Select which environments (Production, Preview, Development) should use each variable.
+  </Step>
+  
+  <Step title="Deploy">
+    Click **Deploy**. Vercel will:
+    
+    1. Clone your repository
+    2. Install dependencies (`npm install`)
+    3. Run the build command
+    4. Deploy the output directory
+    
+    Your deployment will be available at `https://your-project.vercel.app`
+  </Step>
+  
+  <Step title="Update Firebase authorized domains">
+    Add your Vercel deployment URL to Firebase authorized domains:
+    
+    1. Go to Firebase Console > Authentication > Settings
+    2. Under **Authorized domains**, click **Add domain**
+    3. Enter your Vercel domain: `your-project.vercel.app`
+    4. Click **Add**
+  </Step>
+</Steps>
+
+## Vercel Configuration
+
+CEMAC includes a `vercel.json` file that configures deployment settings:
+
+```json
+{
+  "version": 2,
+  "buildCommand": "echo 'No build needed'",
+  "outputDirectory": "public",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Security Headers
+
+The configuration includes security headers:
+
+- **X-Content-Type-Options**: Prevents MIME type sniffing
+- **X-Frame-Options**: Prevents clickjacking attacks
+- **X-XSS-Protection**: Enables browser XSS filtering
+
+## Backend API
+
+The CEMAC backend API is deployed separately and handles:
+
+- Authentication with Firebase
+- Database operations with Firestore
+- Business logic and data validation
+
+<Info>
+  The backend API is pre-deployed at `https://cemac-api.vercel.app`. You don't need to deploy it separately unless you're customizing the backend.
+</Info>
+
+### API Endpoints
+
+The backend provides these endpoints:
+
+- `POST /auth/login` - User authentication
+- `POST /auth/logout` - User logout
+- `GET /auth/verify` - Verify authentication token
+- `POST /auth/recover` - Password recovery
+
+See [API Reference](/api/overview) for complete documentation.
+
+## Environment-Specific Behavior
+
+CEMAC automatically detects the environment and adjusts API endpoints:
+
+### Development (localhost)
+```javascript
+// Proxies through local Express server
+baseURL = window.location.origin; // http://localhost:3000
+```
+
+### Production (Vercel)
+```javascript
+// Connects directly to external API
+baseURL = 'https://cemac-api.vercel.app';
+```
+
+This is configured in `/public/js/services/authService.js:14-34`
+
+## Custom Domains
+
+To use a custom domain with Vercel:
+
+<Steps>
+  <Step title="Add domain in Vercel">
+    1. Go to your project **Settings** > **Domains**
+    2. Enter your custom domain (e.g., `app.cemac.com`)
+    3. Click **Add**
+  </Step>
+  
+  <Step title="Configure DNS">
+    Add the DNS records provided by Vercel to your domain registrar:
+    
+    **For apex domain** (cemac.com):
+    ```
+    A Record: 76.76.21.21
+    ```
+    
+    **For subdomain** (app.cemac.com):
+    ```
+    CNAME Record: cname.vercel-dns.com
+    ```
+  </Step>
+  
+  <Step title="Update Firebase">
+    Add your custom domain to Firebase authorized domains (see Step 6 in deployment).
+  </Step>
+</Steps>
+
+## Continuous Deployment
+
+Vercel automatically deploys when you push to your repository:
+
+1. **Production**: Deploys from `main` or `master` branch
+2. **Preview**: Deploys from all other branches and pull requests
+
+Each deployment gets a unique URL for testing.
+
+## Server Configuration
+
+The Express server configuration in `server/server.js:69-80` includes:
+
+```javascript
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor CEMAC corriendo en: http://localhost:${PORT}`);
+  console.log(`📡 API backend externa: https://cemac-api.vercel.app/`);
+  // ... route logging
+});
+```
+
+The server:
+- Uses `PORT` from environment variables (defaults to 3000)
+- Serves static files from `/public`
+- Proxies auth requests to external API
+- Provides logging for all requests
+
+## Monitoring and Logs
+
+### Vercel Dashboard
+
+Monitor your deployment:
+
+1. **Deployments**: View deployment history and status
+2. **Analytics**: Track page views and performance (requires Pro plan)
+3. **Logs**: Real-time and historical logs
+
+### Accessing Logs
+
+View runtime logs:
+
+```bash
+vercel logs your-project.vercel.app
+```
+
+Or in the Vercel dashboard under **Deployments** > Select deployment > **Logs**
+
+## Rollback
+
+To rollback to a previous deployment:
+
+<Steps>
+  <Step title="Find previous deployment">
+    Go to **Deployments** in Vercel dashboard and find a working deployment.
+  </Step>
+  
+  <Step title="Promote to production">
+    Click the three dots menu and select **Promote to Production**.
+  </Step>
+</Steps>
+
+## Performance Optimization
+
+### Caching
+
+Static assets are automatically cached by Vercel's CDN.
+
+### Compression
+
+Vercel automatically compresses responses with gzip/brotli.
+
+### Geographic Distribution
+
+Content is served from edge nodes closest to your users.
+
+## Troubleshooting
+
+### Build fails
+
+- Check build logs in Vercel dashboard
+- Verify `package.json` dependencies
+- Ensure Node.js version compatibility
+
+### Environment variables not working
+
+- Verify variables are set in correct environment (Production/Preview/Development)
+- Redeploy after adding new variables
+- Check for typos in variable names
+
+### Authentication fails in production
+
+- Verify Firebase authorized domains include your Vercel domain
+- Check that environment variables match Firebase console
+- Review browser console for CORS errors
+
+### API connection errors
+
+- Verify external API (`https://cemac-api.vercel.app`) is accessible
+- Check network tab in browser DevTools
+- Review CORS configuration
+
+## Security Best Practices
+
+<Warning>
+  - Always use HTTPS in production (Vercel provides this automatically)
+  - Enable Vercel's firewall rules for additional protection
+  - Use environment variables for all sensitive data
+  - Regularly update dependencies for security patches
+  - Monitor deployment logs for suspicious activity
+  - Set up Vercel password protection for staging environments
+</Warning>
+
+## Alternative Deployment Options
+
+While Vercel is recommended, you can deploy CEMAC to:
+
+- **Heroku**: Use the Procfile and set buildpack to Node.js
+- **DigitalOcean**: Deploy as a Node.js application
+- **AWS EC2**: Run the Express server on an EC2 instance
+- **Docker**: Containerize the application
+
+For non-Vercel deployments, ensure:
+1. Node.js runtime is available
+2. Environment variables are configured
+3. Port is configurable via `PORT` env var
+4. Static files in `/public` are served correctly
+
+## Next Steps
+
+- Configure [Environment Variables](/configuration/environment-variables)
+- Set up [Firebase](/configuration/firebase-setup)
+- Review [API Documentation](/api/overview)
+- Monitor your deployment in Vercel dashboard

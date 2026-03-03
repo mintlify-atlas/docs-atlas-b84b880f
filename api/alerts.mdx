@@ -1,0 +1,711 @@
+---
+title: 'Alerts'
+description: 'API endpoints for managing inventory alerts and notifications'
+---
+
+## Generate Alerts
+
+<api method="POST" path="/alerts/generate" auth="bearer">
+  Automatically generate alerts based on inventory thresholds. Admin role required.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication (admin role required)
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if alerts were generated successfully
+</ResponseField>
+
+<ResponseField name="alertsGenerated" type="number">
+  Number of new alerts created
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success or error message
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X POST https://cemac-api.vercel.app/alerts/generate \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "alertsGenerated": 5,
+  "message": "Alertas generadas exitosamente"
+}
+```
+
+### Error Codes
+
+- `401` - Unauthorized
+- `403` - Forbidden - Admin role required
+- `500` - Internal server error
+
+---
+
+## Get Alerts
+
+<api method="GET" path="/alerts" auth="bearer">
+  Retrieve a list of alerts with filtering and pagination options.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="status" type="string">
+  Filter by alert status ("pendiente", "en_proceso", "atendido")
+</ParamField>
+
+<ParamField query="priority" type="string">
+  Filter by priority level ("critica", "urgente", "media", "baja")
+</ParamField>
+
+<ParamField query="startDate" type="string">
+  Filter alerts from this date (ISO 8601 format)
+</ParamField>
+
+<ParamField query="endDate" type="string">
+  Filter alerts until this date (ISO 8601 format)
+</ParamField>
+
+<ParamField query="page" type="number" default="1">
+  Page number for pagination
+</ParamField>
+
+<ParamField query="limit" type="number" default="10">
+  Number of alerts per page
+</ParamField>
+
+<ParamField query="sortBy" type="string">
+  Field to sort by (e.g., "createdAt", "priority")
+</ParamField>
+
+<ParamField query="sortOrder" type="string">
+  Sort order: "asc" or "desc"
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Response data object
+</ResponseField>
+
+<ResponseField name="data.alerts" type="array">
+  Array of alert objects
+</ResponseField>
+
+<ResponseField name="data.pagination" type="object">
+  Pagination information
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET "https://cemac-api.vercel.app/alerts?status=pendiente&priority=urgente&page=1&limit=10" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "alerts": [
+      {
+        "id": "alert_001",
+        "type": "stock_low",
+        "priority": "urgente",
+        "status": "pendiente",
+        "productId": "prod_123",
+        "productName": "Cuaderno Profesional 100 hojas",
+        "productCategory": "Cuadernos y Libretas",
+        "currentStock": 5,
+        "minThreshold": 20,
+        "message": "Stock bajo: Solo quedan 5 unidades de Cuaderno Profesional 100 hojas",
+        "createdAt": "2025-11-16T10:30:00.000Z",
+        "updatedAt": "2025-11-16T10:30:00.000Z"
+      },
+      {
+        "id": "alert_002",
+        "type": "stock_out",
+        "priority": "critica",
+        "status": "pendiente",
+        "productId": "prod_456",
+        "productName": "Bolígrafo BIC Azul",
+        "productCategory": "Bolígrafos",
+        "currentStock": 0,
+        "minThreshold": 10,
+        "message": "Producto agotado: Bolígrafo BIC Azul",
+        "createdAt": "2025-11-16T09:15:00.000Z",
+        "updatedAt": "2025-11-16T09:15:00.000Z"
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 3,
+      "total": 25,
+      "totalAlerts": 25,
+      "hasNextPage": true,
+      "hasPrevPage": false,
+      "limit": 10
+    }
+  }
+}
+```
+
+### Error Codes
+
+- `401` - Unauthorized
+- `500` - Internal server error
+
+---
+
+## Get Latest Critical Alert
+
+<api method="GET" path="/alerts/latest-critical" auth="bearer">
+  Retrieve the most recent critical alert.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Response data object
+</ResponseField>
+
+<ResponseField name="data.hasAlert" type="boolean">
+  Indicates if a critical alert exists
+</ResponseField>
+
+<ResponseField name="data.alert" type="object">
+  The latest critical alert object (if exists)
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET https://cemac-api.vercel.app/alerts/latest-critical \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "hasAlert": true,
+    "alert": {
+      "id": "alert_002",
+      "type": "stock_out",
+      "priority": "critica",
+      "status": "pendiente",
+      "productId": "prod_456",
+      "productName": "Bolígrafo BIC Azul",
+      "currentStock": 0,
+      "message": "Producto agotado: Bolígrafo BIC Azul",
+      "createdAt": "2025-11-16T09:15:00.000Z"
+    }
+  }
+}
+```
+
+---
+
+## Get Alerts Count
+
+<api method="GET" path="/alerts/count" auth="bearer">
+  Get count of alerts grouped by status and priority.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Alert counts by category
+</ResponseField>
+
+<ResponseField name="data.byStatus" type="object">
+  Counts grouped by status
+</ResponseField>
+
+<ResponseField name="data.byPriority" type="object">
+  Counts grouped by priority
+</ResponseField>
+
+<ResponseField name="data.total" type="number">
+  Total number of alerts
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET https://cemac-api.vercel.app/alerts/count \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "byStatus": {
+      "pendiente": 15,
+      "en_proceso": 8,
+      "atendido": 2
+    },
+    "byPriority": {
+      "critica": 3,
+      "urgente": 12,
+      "media": 7,
+      "baja": 3
+    },
+    "total": 25
+  }
+}
+```
+
+---
+
+## Get Alert by ID
+
+<api method="GET" path="/alerts/{alertId}" auth="bearer">
+  Retrieve details of a specific alert.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="alertId" type="string" required>
+  ID of the alert to retrieve
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the alert was found
+</ResponseField>
+
+<ResponseField name="alert" type="object">
+  Alert object with full details
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET https://cemac-api.vercel.app/alerts/alert_001 \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "alert": {
+    "id": "alert_001",
+    "type": "stock_low",
+    "priority": "urgente",
+    "status": "pendiente",
+    "productId": "prod_123",
+    "productName": "Cuaderno Profesional 100 hojas",
+    "currentStock": 5,
+    "minThreshold": 20,
+    "message": "Stock bajo: Solo quedan 5 unidades",
+    "createdAt": "2025-11-16T10:30:00.000Z",
+    "updatedAt": "2025-11-16T10:30:00.000Z"
+  }
+}
+```
+
+### Error Codes
+
+- `401` - Unauthorized
+- `404` - Alert not found
+- `500` - Internal server error
+
+---
+
+## Update Alert Status
+
+<api method="PUT" path="/alerts/{alertId}/status" auth="bearer">
+  Update the status of an alert.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="alertId" type="string" required>
+  ID of the alert to update
+</ParamField>
+
+### Request Body
+
+<ParamField body="status" type="string" required>
+  New status: "pendiente", "en_proceso", or "atendido"
+</ParamField>
+
+<ParamField body="notes" type="string">
+  Optional notes about the status change
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the update was successful
+</ResponseField>
+
+<ResponseField name="alert" type="object">
+  Updated alert object
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X PUT https://cemac-api.vercel.app/alerts/alert_001/status \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "en_proceso",
+    "notes": "Pedido realizado al proveedor"
+  }'
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "alert": {
+    "id": "alert_001",
+    "status": "en_proceso",
+    "notes": "Pedido realizado al proveedor",
+    "updatedAt": "2025-11-16T11:00:00.000Z"
+  }
+}
+```
+
+### Error Codes
+
+- `400` - Invalid status value
+- `401` - Unauthorized
+- `404` - Alert not found
+- `500` - Internal server error
+
+---
+
+## Mark All Alerts as Read
+
+<api method="PUT" path="/alerts/mark-all-read" auth="bearer">
+  Mark multiple alerts as attended/read based on filters.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Request Body
+
+<ParamField body="filters" type="object">
+  Optional filters to select which alerts to mark (e.g., `{"priority": "media"}`)
+</ParamField>
+
+<ParamField body="notes" type="string">
+  Optional notes to add to all updated alerts
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the operation was successful
+</ResponseField>
+
+<ResponseField name="updatedCount" type="number">
+  Number of alerts updated
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X PUT https://cemac-api.vercel.app/alerts/mark-all-read \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "filters": {"priority": "media"},
+    "notes": "Revisión masiva completada"
+  }'
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "updatedCount": 7,
+  "message": "7 alertas marcadas como atendidas"
+}
+```
+
+---
+
+## Get Alerts History
+
+<api method="GET" path="/alerts/history" auth="bearer">
+  Retrieve historical alerts data for reporting.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="month" type="string">
+  Filter by specific month (format: "YYYY-MM")
+</ParamField>
+
+<ParamField query="page" type="number" default="1">
+  Page number for pagination
+</ParamField>
+
+<ParamField query="limit" type="number" default="10">
+  Number of items per page
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="history" type="array">
+  Array of historical alert records
+</ResponseField>
+
+<ResponseField name="pagination" type="object">
+  Pagination information
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET "https://cemac-api.vercel.app/alerts/history?month=2025-11&page=1&limit=10" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "history": [
+    {
+      "id": "alert_003",
+      "type": "stock_low",
+      "priority": "media",
+      "status": "atendido",
+      "productName": "Marcador Sharpie Negro",
+      "resolvedAt": "2025-11-16T12:00:00.000Z",
+      "notes": "Stock repuesto"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 50
+  }
+}
+```
+
+---
+
+## Update Alert Thresholds
+
+<api method="PUT" path="/alerts/settings/thresholds" auth="bearer">
+  Configure stock thresholds for alert generation. Admin role required.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication (admin role required)
+</ParamField>
+
+### Request Body
+
+<ParamField body="stockThresholds" type="object" required>
+  Threshold configuration object
+</ParamField>
+
+<ParamField body="stockThresholds.critical" type="number">
+  Stock level for critical alerts
+</ParamField>
+
+<ParamField body="stockThresholds.low" type="number">
+  Stock level for low stock alerts
+</ParamField>
+
+<ParamField body="stockThresholds.warning" type="number">
+  Stock level for warning alerts
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if thresholds were updated
+</ResponseField>
+
+<ResponseField name="settings" type="object">
+  Updated threshold settings
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X PUT https://cemac-api.vercel.app/alerts/settings/thresholds \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "stockThresholds": {
+      "critical": 5,
+      "low": 20,
+      "warning": 50
+    }
+  }'
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "settings": {
+    "stockThresholds": {
+      "critical": 5,
+      "low": 20,
+      "warning": 50
+    },
+    "updatedAt": "2025-11-16T13:00:00.000Z"
+  }
+}
+```
+
+### Error Codes
+
+- `401` - Unauthorized
+- `403` - Forbidden - Admin role required
+- `500` - Internal server error
+
+---
+
+## Delete Alert
+
+<api method="DELETE" path="/alerts/{alertId}" auth="bearer">
+  Delete a specific alert. Admin role required.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication (admin role required)
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="alertId" type="string" required>
+  ID of the alert to delete
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if deletion was successful
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Confirmation message
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X DELETE https://cemac-api.vercel.app/alerts/alert_001 \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "message": "Alerta eliminada exitosamente"
+}
+```
+
+### Error Codes
+
+- `401` - Unauthorized
+- `403` - Forbidden - Admin role required
+- `404` - Alert not found
+- `500` - Internal server error

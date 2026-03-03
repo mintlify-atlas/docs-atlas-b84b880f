@@ -1,0 +1,329 @@
+---
+title: 'Firebase Setup'
+description: 'Configure Firebase Authentication and Firestore for CEMAC'
+---
+
+## Overview
+
+CEMAC uses Firebase as its backend platform, leveraging Firebase Authentication for user management and Firestore Database for data storage. This guide will walk you through setting up Firebase for your CEMAC instance.
+
+## Prerequisites
+
+- Google account
+- Firebase project (or ability to create one)
+- Node.js 18 or higher installed
+
+## Creating a Firebase Project
+
+<Steps>
+  <Step title="Access Firebase Console">
+    Navigate to the [Firebase Console](https://console.firebase.google.com/) and sign in with your Google account.
+  </Step>
+  
+  <Step title="Create new project">
+    Click **Add project** and follow these steps:
+    
+    1. Enter a project name (e.g., "CEMAC Production")
+    2. (Optional) Enable Google Analytics if you want usage insights
+    3. Click **Create project** and wait for setup to complete
+  </Step>
+  
+  <Step title="Add web app">
+    From your project dashboard:
+    
+    1. Click the **Web** icon (`</>`) to add a web app
+    2. Register your app with a nickname (e.g., "CEMAC Web")
+    3. (Optional) Check "Also set up Firebase Hosting" if deploying to Firebase
+    4. Click **Register app**
+  </Step>
+  
+  <Step title="Copy configuration">
+    Firebase will display your app's configuration. Copy these values - you'll need them for your `.env` file:
+    
+    ```javascript
+    const firebaseConfig = {
+      apiKey: "AIzaSyC...",
+      authDomain: "cemac-prod.firebaseapp.com",
+      projectId: "cemac-prod",
+      storageBucket: "cemac-prod.appspot.com",
+      messagingSenderId: "123456789012",
+      appId: "1:123456789012:web:abc123"
+    };
+    ```
+  </Step>
+</Steps>
+
+## Configuring Firebase Authentication
+
+CEMAC uses Firebase Authentication to manage user access and secure API endpoints.
+
+<Steps>
+  <Step title="Enable Authentication">
+    In the Firebase Console, navigate to **Authentication** from the left sidebar and click **Get started**.
+  </Step>
+  
+  <Step title="Configure sign-in methods">
+    Under the **Sign-in method** tab, enable the authentication providers you want to use:
+    
+    ### Email/Password (Recommended)
+    
+    1. Click on **Email/Password**
+    2. Toggle **Enable**
+    3. (Optional) Enable **Email link (passwordless sign-in)**
+    4. Click **Save**
+    
+    ### Additional Providers (Optional)
+    
+    You can also enable:
+    - Google
+    - GitHub
+    - Microsoft
+    - Anonymous
+  </Step>
+  
+  <Step title="Add authorized domains">
+    Under the **Settings** tab, add your application domains to the authorized domains list:
+    
+    - For development: `localhost`
+    - For production: your actual domain (e.g., `app.cemac.com`)
+    
+    <Warning>
+      Vercel deployments require adding your Vercel domain (e.g., `cemac.vercel.app`) to authorized domains.
+    </Warning>
+  </Step>
+  
+  <Step title="Create initial users">
+    Under the **Users** tab, you can manually add initial users:
+    
+    1. Click **Add user**
+    2. Enter email and password
+    3. Click **Add user**
+    
+    Alternatively, users can register through the CEMAC application interface.
+  </Step>
+</Steps>
+
+## Setting Up Firestore Database
+
+Firestore is used to store inventory data, sales records, analytics, and user information.
+
+<Steps>
+  <Step title="Create Firestore database">
+    In the Firebase Console:
+    
+    1. Navigate to **Firestore Database** from the left sidebar
+    2. Click **Create database**
+  </Step>
+  
+  <Step title="Choose location">
+    Select a database location closest to your users:
+    
+    - **us-central1** (Iowa) - Default, good for North America
+    - **europe-west1** (Belgium) - Europe
+    - **asia-northeast1** (Tokyo) - Asia
+    
+    <Warning>
+      The location cannot be changed after creation. Choose carefully based on your primary user base.
+    </Warning>
+  </Step>
+  
+  <Step title="Configure security rules">
+    Choose **Start in production mode** for now. We'll configure detailed security rules next.
+    
+    Click **Enable** to create the database.
+  </Step>
+  
+  <Step title="Set up security rules">
+    Navigate to the **Rules** tab and replace the default rules with:
+    
+    ```javascript
+    rules_version = '2';
+    service cloud.firestore {
+      match /databases/{database}/documents {
+        // Helper function to check if user is authenticated
+        function isAuthenticated() {
+          return request.auth != null;
+        }
+        
+        // Users collection
+        match /users/{userId} {
+          allow read, write: if isAuthenticated() && request.auth.uid == userId;
+        }
+        
+        // Inventory collection
+        match /inventory/{productId} {
+          allow read: if isAuthenticated();
+          allow write: if isAuthenticated();
+        }
+        
+        // Sales collection
+        match /sales/{saleId} {
+          allow read: if isAuthenticated();
+          allow write: if isAuthenticated();
+        }
+        
+        // Categories collection
+        match /categories/{categoryId} {
+          allow read: if isAuthenticated();
+          allow write: if isAuthenticated();
+        }
+        
+        // Brands collection
+        match /brands/{brandId} {
+          allow read: if isAuthenticated();
+          allow write: if isAuthenticated();
+        }
+        
+        // Suppliers collection
+        match /suppliers/{supplierId} {
+          allow read: if isAuthenticated();
+          allow write: if isAuthenticated();
+        }
+        
+        // Customers collection
+        match /customers/{customerId} {
+          allow read: if isAuthenticated();
+          allow write: if isAuthenticated();
+        }
+        
+        // Alerts collection
+        match /alerts/{alertId} {
+          allow read: if isAuthenticated();
+          allow write: if isAuthenticated();
+        }
+      }
+    }
+    ```
+    
+    Click **Publish** to apply the rules.
+  </Step>
+  
+  <Step title="Create initial collections">
+    Create the following collections to match CEMAC's data structure:
+    
+    - `users` - User profiles and settings
+    - `inventory` - Product inventory data
+    - `sales` - Sales transactions
+    - `categories` - Product categories
+    - `brands` - Product brands
+    - `suppliers` - Supplier information
+    - `customers` - Customer records
+    - `alerts` - System alerts and notifications
+    
+    You can create these manually or let CEMAC create them automatically when data is first written.
+  </Step>
+</Steps>
+
+## Firebase Admin SDK (Optional)
+
+For backend operations, you may need the Firebase Admin SDK:
+
+<Steps>
+  <Step title="Generate service account key">
+    In Firebase Console:
+    
+    1. Go to **Project Settings** (gear icon) > **Service accounts**
+    2. Click **Generate new private key**
+    3. Confirm and download the JSON file
+  </Step>
+  
+  <Step title="Store credentials securely">
+    <Warning>
+      Never commit service account keys to version control. Store them securely and reference them via environment variables.
+    </Warning>
+    
+    For local development, save the key file outside your project directory.
+    
+    For production (Vercel), add the entire JSON content as an environment variable:
+    
+    ```bash
+    FIREBASE_SERVICE_ACCOUNT='{"type":"service_account",...}'
+    ```
+  </Step>
+</Steps>
+
+## External API Integration
+
+CEMAC uses an external API hosted at `https://cemac-api.vercel.app` for backend operations. This API handles:
+
+- User authentication via Firebase
+- Database operations with Firestore
+- Server-side business logic
+
+<Info>
+  The external API is pre-configured and deployed separately. You don't need to deploy it yourself unless you're forking the entire CEMAC project.
+</Info>
+
+## Connecting CEMAC to Firebase
+
+Once Firebase is configured:
+
+<Steps>
+  <Step title="Update environment variables">
+    Add your Firebase configuration to `.env`:
+    
+    ```env
+    FIREBASE_API_KEY=your_api_key
+    FIREBASE_AUTH_DOMAIN=your_auth_domain
+    FIREBASE_PROJECT_ID=your_project_id
+    FIREBASE_STORAGE_BUCKET=your_storage_bucket
+    FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+    FIREBASE_APP_ID=your_app_id
+    ```
+    
+    See [Environment Variables](/configuration/environment-variables) for details.
+  </Step>
+  
+  <Step title="Test the connection">
+    Start the development server:
+    
+    ```bash
+    npm run dev
+    ```
+    
+    Open `http://localhost:3000` and try logging in with a Firebase user.
+  </Step>
+</Steps>
+
+## Testing Firebase Integration
+
+Verify your Firebase setup is working:
+
+1. **Authentication Test**: Try logging in with credentials
+2. **Database Test**: Check if data appears in Firestore console
+3. **Security Test**: Ensure unauthorized users cannot access data
+
+## Troubleshooting
+
+### Authentication errors
+
+- Verify your API key is correct
+- Check that Email/Password auth is enabled in Firebase Console
+- Ensure your domain is in the authorized domains list
+
+### Permission denied errors
+
+- Review Firestore security rules
+- Verify user is authenticated before accessing data
+- Check that collections exist in Firestore
+
+### CORS errors
+
+- Add your domain to Firebase authorized domains
+- Verify API key restrictions in Google Cloud Console
+
+## Best Practices
+
+<Warning>
+  - Use separate Firebase projects for development and production
+  - Never expose service account keys in client-side code
+  - Regularly review and update security rules
+  - Enable Firebase App Check for additional security
+  - Monitor usage in Firebase Console to detect anomalies
+</Warning>
+
+## Next Steps
+
+- Configure [Environment Variables](/configuration/environment-variables)
+- Set up [Deployment](/configuration/deployment)
+- Review [API Endpoints](/api/overview)

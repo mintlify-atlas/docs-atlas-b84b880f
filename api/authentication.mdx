@@ -1,0 +1,436 @@
+---
+title: 'Authentication'
+description: 'Authentication flows, JWT tokens, and authorization headers'
+---
+
+## Overview
+
+The CEMAC API uses JWT (JSON Web Tokens) for authentication. After a successful login, the API returns a token that must be included in subsequent requests to protected endpoints.
+
+## Authentication Flow
+
+1. **User Login** - Send credentials to `/auth/login`
+2. **Receive Token** - API returns a JWT token and user data
+3. **Store Token** - Client stores token in localStorage
+4. **Use Token** - Include token in Authorization header for protected requests
+5. **Verify Token** - Optionally verify token validity with `/auth/verify`
+6. **Logout** - Clear token and end session
+
+## Endpoints
+
+### Login
+
+Authenticate a user and receive a JWT token.
+
+```http
+POST /auth/login
+Content-Type: application/json
+```
+
+**Request Body:**
+
+```json
+{
+  "email": "user@example.com",
+  "password": "your-password"
+}
+```
+
+**Success Response (200 OK):**
+
+```json
+{
+  "success": true,
+  "message": "Login exitoso",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "email": "user@example.com",
+    "firstName": "John",
+    "lastName": "Doe"
+  }
+}
+```
+
+**Error Response (401 Unauthorized):**
+
+```json
+{
+  "success": false,
+  "error": "Credenciales inválidas"
+}
+```
+
+**Example Implementation:**
+
+```javascript
+async login(email, password) {
+    try {
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+            body: JSON.stringify({ email, password })
+        };
+
+        const response = await fetch(`${this.baseURL}/auth/login`, requestOptions);
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            return { 
+                success: false, 
+                error: errorData.error || `Error ${response.status}` 
+            };
+        }
+
+        const data = await response.json();
+
+        if (data.token) {
+            this.setToken(data.token);
+            if (data.user) {
+                this.setUser(data.user);
+            }
+            return { success: true, ...data };
+        }
+    } catch (error) {
+        return { 
+            success: false, 
+            error: 'Error de conexión con la API' 
+        };
+    }
+}
+```
+
+<Warning>
+Never log or expose passwords in your application. The example above is for demonstration purposes only.
+</Warning>
+
+### Logout
+
+End the user session and invalidate the token.
+
+```http
+POST /auth/logout
+Authorization: Bearer <token>
+```
+
+**Success Response (200 OK):**
+
+```json
+{
+  "success": true,
+  "message": "Sesión cerrada exitosamente"
+}
+```
+
+**Example Implementation:**
+
+```javascript
+async logout() {
+    try {
+        const token = this.getToken();
+        if (token) {
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                mode: 'cors'
+            };
+
+            await fetch(`${this.baseURL}/auth/logout`, requestOptions);
+        }
+    } catch (error) {
+        console.error('Error en logout:', error);
+    } finally {
+        this.clearSession();
+        window.location.href = '/';
+    }
+}
+```
+
+### Verify Authentication
+
+Verify if the current token is valid.
+
+```http
+GET /auth/verify
+Authorization: Bearer <token>
+```
+
+**Success Response (200 OK):**
+
+```json
+{
+  "success": true,
+  "message": "Usuario autenticado",
+  "authenticated": true
+}
+```
+
+**Error Response (401 Unauthorized):**
+
+```json
+{
+  "success": false,
+  "error": "Token no proporcionado"
+}
+```
+
+**Example Implementation:**
+
+```javascript
+async verifyAuth() {
+    try {
+        const token = this.getToken();
+        if (!token) {
+            return { success: false, error: 'No hay token' };
+        }
+
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            },
+            mode: 'cors'
+        };
+
+        const response = await fetch(`${this.baseURL}/auth/verify`, requestOptions);
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        return { success: false, error: 'Error de verificación' };
+    }
+}
+```
+
+### Password Recovery
+
+Request a password reset for a user account.
+
+```http
+POST /auth/recover
+Content-Type: application/json
+```
+
+**Request Body:**
+
+```json
+{
+  "email": "user@example.com",
+  "isAdmin": false
+}
+```
+
+**Success Response (200 OK):**
+
+```json
+{
+  "success": true,
+  "message": "Correo de recuperación enviado"
+}
+```
+
+**Example Implementation:**
+
+```javascript
+async requestPasswordReset(email, isAdmin = false) {
+    try {
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+            body: JSON.stringify({ email, isAdmin })
+        };
+
+        const response = await fetch(`${this.baseURL}/auth/recover`, requestOptions);
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Error al solicitar el restablecimiento');
+        }
+
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
+```
+
+### Register (Not Implemented)
+
+```http
+POST /auth/register
+Content-Type: application/json
+```
+
+<Note>
+User registration is currently not implemented and will return a 501 Not Implemented status.
+</Note>
+
+## JWT Token Management
+
+### Storing Tokens
+
+Tokens are stored in the browser's localStorage:
+
+```javascript
+setToken(token) {
+    localStorage.setItem('authToken', token);
+}
+
+getToken() {
+    return localStorage.getItem('authToken');
+}
+```
+
+### Storing User Data
+
+User information is also stored in localStorage:
+
+```javascript
+setUser(user) {
+    localStorage.setItem('user', JSON.stringify(user));
+}
+
+getUser() {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+}
+```
+
+### Clearing Session
+
+Remove all authentication data:
+
+```javascript
+clearSession() {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+}
+```
+
+### Checking Authentication Status
+
+```javascript
+isAuthenticated() {
+    return this.getToken() !== null;
+}
+```
+
+## Authorization Headers
+
+All protected endpoints require the Authorization header with a Bearer token:
+
+```http
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**JavaScript Example:**
+
+```javascript
+const token = authService.getToken();
+
+fetch('https://cemac-api.vercel.app/auth/verify', {
+    method: 'GET',
+    headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+    }
+});
+```
+
+## Middleware
+
+The API uses middleware to authenticate requests:
+
+```javascript
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+
+    if (!token) {
+        return res.status(401).json({ 
+            success: false, 
+            error: 'Token de acceso requerido' 
+        });
+    }
+
+    req.user = { token };
+    next();
+};
+```
+
+Protected routes use this middleware:
+
+```javascript
+router.post('/logout', authenticateToken, logout);
+router.get('/verify', authenticateToken, verifyAuth);
+```
+
+## Error Handling
+
+### Common Authentication Errors
+
+| Status | Error | Description |
+|--------|-------|-------------|
+| `400` | Email y contraseña son requeridos | Missing required fields |
+| `401` | Credenciales inválidas | Wrong email or password |
+| `401` | Token de acceso requerido | Missing Authorization header |
+| `401` | Token no proporcionado | Token not included in request |
+| `408` | Request Timeout | API took too long to respond (>10s) |
+| `500` | Error interno del servidor | Server error occurred |
+
+### Handling Timeouts
+
+The API implements a 10-second timeout for all external API requests:
+
+```javascript
+const controller = new AbortController();
+const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+try {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+        signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+} catch (fetchError) {
+    clearTimeout(timeoutId);
+    if (fetchError.name === 'AbortError') {
+        return res.status(408).json({
+            success: false,
+            error: 'La petición tardó demasiado. La API externa puede estar inactiva.'
+        });
+    }
+}
+```
+
+<Warning>
+Always handle timeout errors gracefully in your application. The external API may be temporarily unavailable or experiencing high load.
+</Warning>
+
+## Best Practices
+
+1. **Always validate tokens** - Check if a token exists before making authenticated requests
+2. **Handle token expiration** - Implement logic to refresh or re-authenticate when tokens expire
+3. **Secure token storage** - While localStorage is used, be aware of XSS vulnerabilities
+4. **Clear sessions on logout** - Always remove tokens and user data when logging out
+5. **Use HTTPS** - Never send tokens over unsecured HTTP connections
+6. **Implement error handling** - Handle network errors, timeouts, and invalid responses
+7. **Don't expose tokens** - Never log tokens or include them in URLs

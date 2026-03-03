@@ -1,0 +1,350 @@
+---
+title: 'Suppliers API'
+description: 'Supplier management endpoints'
+---
+
+## Get All Suppliers
+
+Retrieve a list of all suppliers with optional filtering and pagination.
+
+<CodeGroup>
+```bash cURL
+curl -X GET "https://cemac-api.vercel.app/suppliers?search=&isActive=true&page=1&limit=50" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+</CodeGroup>
+
+**Authentication:** Required (Bearer Token)
+
+**Method:** `GET`
+
+**Endpoint:** `/suppliers`
+
+### Query Parameters
+
+<ParamField query="search" type="string">
+  Search term to filter suppliers by name or contact
+</ParamField>
+
+<ParamField query="isActive" type="boolean">
+  Filter by active status (true/false)
+</ParamField>
+
+<ParamField query="page" type="number">
+  Page number for pagination
+</ParamField>
+
+<ParamField query="limit" type="number">
+  Number of suppliers per page
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="suppliers" type="array">
+  Array of supplier objects
+  <Expandable title="Supplier object properties">
+    <ResponseField name="id" type="string">
+      Unique supplier identifier
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Supplier's business name
+    </ResponseField>
+    <ResponseField name="description" type="string">
+      Description of the supplier's business
+    </ResponseField>
+    <ResponseField name="contactName" type="string">
+      Primary contact person name
+    </ResponseField>
+    <ResponseField name="email" type="string">
+      Supplier's email address
+    </ResponseField>
+    <ResponseField name="phone" type="string">
+      Supplier's phone number
+    </ResponseField>
+    <ResponseField name="address" type="string">
+      Supplier's physical address
+    </ResponseField>
+    <ResponseField name="productCount" type="number">
+      Number of products from this supplier
+    </ResponseField>
+    <ResponseField name="isActive" type="boolean">
+      Whether the supplier is active
+    </ResponseField>
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp of creation
+    </ResponseField>
+    <ResponseField name="updatedAt" type="string">
+      ISO 8601 timestamp of last update
+    </ResponseField>
+    <ResponseField name="createdBy" type="string">
+      User ID who created the supplier
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="total" type="number">
+  Total number of suppliers
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Response message
+</ResponseField>
+
+---
+
+## Create Supplier
+
+Create a new supplier.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://cemac-api.vercel.app/suppliers \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Tech Distributors Inc.",
+    "description": "Leading technology product distributor",
+    "contactName": "Jane Smith",
+    "email": "contact@techdist.com",
+    "phone": "+1-555-0123",
+    "address": "789 Business Blvd, Tech City, TC 54321"
+  }'
+```
+</CodeGroup>
+
+**Authentication:** Required (Bearer Token)
+
+**Method:** `POST`
+
+**Endpoint:** `/suppliers`
+
+### Request Body
+
+<ParamField body="name" type="string" required>
+  Supplier's business name (max 100 characters)
+</ParamField>
+
+<ParamField body="description" type="string">
+  Description of the supplier (max 500 characters)
+</ParamField>
+
+<ParamField body="contactName" type="string">
+  Primary contact person name (max 100 characters)
+</ParamField>
+
+<ParamField body="email" type="string">
+  Supplier's email address (valid email format)
+</ParamField>
+
+<ParamField body="phone" type="string">
+  Supplier's phone number (max 20 characters)
+</ParamField>
+
+<ParamField body="address" type="string">
+  Supplier's physical address (max 500 characters)
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the supplier was created successfully
+</ResponseField>
+
+<ResponseField name="supplier" type="object">
+  Created supplier object
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success message
+</ResponseField>
+
+---
+
+## Update Supplier
+
+Update an existing supplier's information.
+
+<CodeGroup>
+```bash cURL
+curl -X PUT https://cemac-api.vercel.app/suppliers/SUPPLIER_ID \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Tech Distributors Global",
+    "description": "Global technology product distributor",
+    "contactName": "Jane Doe",
+    "email": "info@techdistglobal.com",
+    "phone": "+1-555-9999",
+    "address": "999 Global Plaza, Tech City, TC 54321",
+    "isActive": true
+  }'
+```
+</CodeGroup>
+
+**Authentication:** Required (Bearer Token)
+
+**Method:** `PUT`
+
+**Endpoint:** `/suppliers/{supplierId}`
+
+### Path Parameters
+
+<ParamField path="supplierId" type="string" required>
+  Unique identifier of the supplier
+</ParamField>
+
+### Request Body
+
+<ParamField body="name" type="string">
+  Updated supplier name (max 100 characters)
+</ParamField>
+
+<ParamField body="description" type="string">
+  Updated description (max 500 characters)
+</ParamField>
+
+<ParamField body="contactName" type="string">
+  Updated contact name (max 100 characters)
+</ParamField>
+
+<ParamField body="email" type="string">
+  Updated email address
+</ParamField>
+
+<ParamField body="phone" type="string">
+  Updated phone number (max 20 characters)
+</ParamField>
+
+<ParamField body="address" type="string">
+  Updated address (max 500 characters)
+</ParamField>
+
+<ParamField body="isActive" type="boolean">
+  Updated active status
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the supplier was updated successfully
+</ResponseField>
+
+<ResponseField name="supplier" type="object">
+  Updated supplier object
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success message
+</ResponseField>
+
+---
+
+## Delete Supplier
+
+Delete a supplier from the system.
+
+<CodeGroup>
+```bash cURL
+curl -X DELETE https://cemac-api.vercel.app/suppliers/SUPPLIER_ID \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+</CodeGroup>
+
+**Authentication:** Required (Bearer Token)
+
+**Method:** `DELETE`
+
+**Endpoint:** `/suppliers/{supplierId}`
+
+### Path Parameters
+
+<ParamField path="supplierId" type="string" required>
+  Unique identifier of the supplier to delete
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the supplier was deleted successfully
+</ResponseField>
+
+<ResponseField name="supplierId" type="string">
+  ID of the deleted supplier
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success message
+</ResponseField>
+
+---
+
+## Get Supplier Statistics
+
+Retrieve detailed statistics for a specific supplier.
+
+<CodeGroup>
+```bash cURL
+curl -X GET https://cemac-api.vercel.app/suppliers/SUPPLIER_ID/stats \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+</CodeGroup>
+
+**Authentication:** Required (Bearer Token)
+
+**Method:** `GET`
+
+**Endpoint:** `/suppliers/{supplierId}/stats`
+
+### Path Parameters
+
+<ParamField path="supplierId" type="string" required>
+  Unique identifier of the supplier
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="supplier" type="object">
+  Supplier details
+</ResponseField>
+
+<ResponseField name="stats" type="object">
+  Supplier statistics
+  <Expandable title="Statistics properties">
+    <ResponseField name="productCount" type="number">
+      Total number of products
+    </ResponseField>
+    <ResponseField name="activeProducts" type="number">
+      Number of active products
+    </ResponseField>
+    <ResponseField name="limitedProducts" type="number">
+      Number of products with limited stock
+    </ResponseField>
+    <ResponseField name="unlimitedProducts" type="number">
+      Number of products with unlimited stock
+    </ResponseField>
+    <ResponseField name="totalStock" type="number">
+      Total stock quantity across all products
+    </ResponseField>
+    <ResponseField name="lowStockProducts" type="number">
+      Number of products with low stock
+    </ResponseField>
+    <ResponseField name="averagePrice" type="number">
+      Average price of products from this supplier
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Response message
+</ResponseField>

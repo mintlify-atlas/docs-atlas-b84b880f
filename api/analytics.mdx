@@ -1,0 +1,413 @@
+---
+title: 'Analytics'
+description: 'API endpoints for sales analytics and business intelligence'
+---
+
+## Get Sales Analytics
+
+<api method="GET" path="/analysis/sales" auth="bearer">
+  Retrieve comprehensive sales analytics including daily and monthly trends.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Analytics data object
+</ResponseField>
+
+<ResponseField name="data.daily" type="object">
+  Daily sales data for the last 7 days
+</ResponseField>
+
+<ResponseField name="data.daily.labels" type="array">
+  Array of day labels (e.g., ["Dom", "Lun", "Mar", ...])
+</ResponseField>
+
+<ResponseField name="data.daily.values" type="array">
+  Array of daily revenue values
+</ResponseField>
+
+<ResponseField name="data.monthly" type="object">
+  Monthly sales data for the last 6 months
+</ResponseField>
+
+<ResponseField name="data.monthly.labels" type="array">
+  Array of month labels
+</ResponseField>
+
+<ResponseField name="data.monthly.values" type="array">
+  Array of monthly revenue values
+</ResponseField>
+
+<ResponseField name="data.topProducts" type="array">
+  Top selling products by sales volume
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET https://cemac-api.vercel.app/analysis/sales \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "daily": {
+      "labels": ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+      "values": [1500, 2300, 1800, 2100, 2800, 3200, 2600]
+    },
+    "monthly": {
+      "labels": ["Jun", "Jul", "Ago", "Sep", "Oct", "Nov"],
+      "values": [48000, 51000, 54000, 58000, 62000, 65000]
+    },
+    "topProducts": [
+      {
+        "id": "prod_123",
+        "name": "Cuaderno Profesional 100 hojas",
+        "sales": 150,
+        "revenue": 6825
+      },
+      {
+        "id": "prod_456",
+        "name": "Bolígrafo BIC Azul",
+        "sales": 120,
+        "revenue": 2400
+      }
+    ]
+  }
+}
+```
+
+### Error Codes
+
+- `401` - Unauthorized
+- `500` - Internal server error
+
+---
+
+## Get Executive Summary
+
+<api method="GET" path="/analysis/sales/summary" auth="bearer">
+  Get executive summary comparing current month vs. last month performance.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Executive summary data
+</ResponseField>
+
+<ResponseField name="data.currentMonth" type="object">
+  Current month statistics
+</ResponseField>
+
+<ResponseField name="data.currentMonth.sales" type="number">
+  Total number of sales this month
+</ResponseField>
+
+<ResponseField name="data.currentMonth.revenue" type="number">
+  Total revenue this month
+</ResponseField>
+
+<ResponseField name="data.currentMonth.averageOrderValue" type="number">
+  Average order value this month
+</ResponseField>
+
+<ResponseField name="data.lastMonth" type="object">
+  Last month statistics
+</ResponseField>
+
+<ResponseField name="data.growth" type="object">
+  Growth percentages
+</ResponseField>
+
+<ResponseField name="data.growth.revenue" type="number">
+  Revenue growth percentage
+</ResponseField>
+
+<ResponseField name="data.growth.sales" type="number">
+  Sales growth percentage
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET https://cemac-api.vercel.app/analysis/sales/summary \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "currentMonth": {
+      "sales": 45,
+      "revenue": 12500.75,
+      "averageOrderValue": 277.79
+    },
+    "lastMonth": {
+      "sales": 38,
+      "revenue": 10200.5,
+      "averageOrderValue": 268.43
+    },
+    "growth": {
+      "revenue": 22.55,
+      "sales": 18.42
+    }
+  }
+}
+```
+
+---
+
+## Get Custom Period Analytics
+
+<api method="GET" path="/analysis/sales/custom" auth="bearer">
+  Get analytics for a custom date range with flexible grouping.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="startDate" type="string" required>
+  Start date for the analysis period (ISO 8601 format)
+</ParamField>
+
+<ParamField query="endDate" type="string" required>
+  End date for the analysis period (ISO 8601 format)
+</ParamField>
+
+<ParamField query="groupBy" type="string" default="day">
+  Grouping interval: "day" or "month"
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Custom period analytics data
+</ResponseField>
+
+<ResponseField name="data.labels" type="array">
+  Array of date labels based on groupBy parameter
+</ResponseField>
+
+<ResponseField name="data.values" type="array">
+  Array of revenue values for each period
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET "https://cemac-api.vercel.app/analysis/sales/custom?startDate=2025-10-01&endDate=2025-11-16&groupBy=day" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "labels": ["01/10", "02/10", "03/10", "04/10", "05/10"],
+    "values": [1500, 2300, 1800, 2100, 2800]
+  }
+}
+```
+
+---
+
+## Get Today's Statistics
+
+<api method="GET" path="/sales" auth="bearer">
+  Get real-time statistics for today's sales activity. Use `startDate` parameter set to today.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="startDate" type="string" required>
+  Set to today's date to get today's stats (ISO 8601 format)
+</ParamField>
+
+<ParamField query="limit" type="number" default="1000">
+  Number of sales to retrieve
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="sales" type="array">
+  Array of today's sales
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET "https://cemac-api.vercel.app/sales?startDate=2025-11-16&limit=1000" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "sales": [
+    {
+      "id": "sale_001",
+      "date": "2025-11-16",
+      "total": 263.90,
+      "cliente": "María González",
+      "products": [
+        {
+          "productId": "prod_123",
+          "quantity": 5
+        }
+      ]
+    }
+  ]
+}
+```
+
+<Note>
+  The frontend calculates today's statistics from the sales data, including total revenue, number of orders, products sold, and unique customers.
+</Note>
+
+---
+
+## Get Inventory Analysis
+
+<api method="GET" path="/inventory" auth="bearer">
+  Retrieve inventory data for analytics. The frontend processes this to calculate availability metrics.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="limit" type="number" default="1000">
+  Maximum number of products to retrieve
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="products" type="array">
+  Array of all products with stock information
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET "https://cemac-api.vercel.app/inventory?limit=1000" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "products": [
+    {
+      "id": "prod_123",
+      "name": "Cuaderno A4",
+      "stock": 150,
+      "availability": "available"
+    },
+    {
+      "id": "prod_456",
+      "name": "Bolígrafo",
+      "stock": 5,
+      "availability": "limited"
+    },
+    {
+      "id": "prod_789",
+      "name": "Marcador",
+      "stock": 0,
+      "availability": "out_of_stock"
+    }
+  ]
+}
+```
+
+<Note>
+  The analytics service categorizes products as:
+  - **Disponible**: Stock > 10 or availability = "unlimited"
+  - **Stock Bajo**: Stock between 1 and 10
+  - **Agotado**: Stock = 0
+</Note>
+
+### Error Codes
+
+- `401` - Unauthorized
+- `500` - Internal server error
+
+---
+
+## Analytics Data Processing
+
+<Info>
+  The CEMAC analytics service includes fallback mechanisms:
+  
+  - If `/analysis/sales` endpoint is unavailable, analytics are calculated from `/sales` endpoint data
+  - Daily data shows the last 7 days
+  - Monthly data shows the last 6 months
+  - Top products are ranked by sales volume
+  - All calculations include proper date filtering and aggregation
+</Info>

@@ -1,0 +1,400 @@
+---
+title: 'User management'
+description: 'Control team access, manage roles, and configure user permissions'
+icon: 'users-gear'
+---
+
+CEMAC's user management system lets administrators control who has access to the platform, what they can do, and how they interact with the system.
+
+## User roles
+
+CEMAC has two primary user roles with different permission levels:
+
+### Administrator
+
+Admins have full system access:
+
+<CardGroup cols={2}>
+  <Card title="User management" icon="user-plus">
+    Create, edit, and deactivate user accounts
+  </Card>
+  <Card title="System configuration" icon="gear">
+    Modify settings, thresholds, and business rules
+  </Card>
+  <Card title="Full data access" icon="database">
+    View, modify, and delete all records
+  </Card>
+  <Card title="Reports & exports" icon="file-export">
+    Export data and generate comprehensive reports
+  </Card>
+</CardGroup>
+
+### Employee
+
+Employees have operational access:
+
+<CardGroup cols={2}>
+  <Card title="Sales processing" icon="cash-register">
+    Process customer transactions
+  </Card>
+  <Card title="Inventory viewing" icon="boxes-stacked">
+    View product information and stock levels
+  </Card>
+  <Card title="Customer service" icon="headset">
+    Access customer information and history
+  </Card>
+  <Card title="Basic reporting" icon="chart-simple">
+    View analytics and dashboards
+  </Card>
+</CardGroup>
+
+<Info>
+Employees cannot modify inventory, change settings, or access financial reports. This separation ensures data integrity and security.
+</Info>
+
+## User list
+
+The user management dashboard displays all team members:
+
+### User table columns
+
+Each user entry shows:
+
+| Column | Information |
+|--------|-------------|
+| User ID | Unique identifier (first 10 characters) |
+| Email | Login email address |
+| Name | First and last name |
+| Role | Administrator or Employee badge |
+| Status | Active or Inactive indicator |
+| Actions | Quick action buttons |
+
+### Status indicators
+
+<Accordion title="Active users">
+  - Green badge
+  - Can log in to the system
+  - Permissions are enforced
+  - Counted in license/subscription
+</Accordion>
+
+<Accordion title="Inactive users">
+  - Red badge
+  - Cannot log in
+  - Previous work remains in system
+  - Not counted in active user limit
+</Accordion>
+
+<Warning>
+Inactivating a user immediately revokes their access but preserves their historical data (sales, notes, etc.).
+</Warning>
+
+## Create new users
+
+Add team members to your CEMAC account:
+
+<Steps>
+  <Step title="Open user creation form">
+    Click **New User** button in the user management view
+  </Step>
+  <Step title="Enter user details">
+    Required information:
+    - First name
+    - Last name
+    - Email address (must be unique)
+    - Password (minimum 6 characters)
+    - Role (Administrator or Employee)
+  </Step>
+  <Step title="Set initial status">
+    Users are created as Active by default
+  </Step>
+  <Step title="Save user">
+    Click **Create User** to add them to the system
+  </Step>
+</Steps>
+
+### Email validation
+
+Email addresses must:
+- Be properly formatted (user@domain.com)
+- Be unique in the system
+- Not be from disposable email providers
+
+### Password requirements
+
+Passwords must meet these criteria:
+- Minimum 6 characters
+- Recommended: Mix of letters and numbers
+- No maximum length
+
+<Tip>
+Encourage users to change their password after first login and use a password manager for better security.
+</Tip>
+
+## Edit user profiles
+
+Modify existing user information:
+
+### Editable fields
+
+<Accordion title="Name changes">
+  Update first name and last name if:
+  - User gets married/divorced
+  - Name was entered incorrectly
+  - User preferences change
+</Accordion>
+
+<Accordion title="Email restrictions">
+  Email addresses **cannot** be changed after account creation. This prevents:
+  - Accidental lockouts
+  - Security issues
+  - Data integrity problems
+  
+  To change email, create a new account and deactivate the old one.
+</Accordion>
+
+### How to edit
+
+1. Click the **edit icon** (pencil) next to any user
+2. Modify allowed fields
+3. Click **Save Changes**
+4. Changes take effect immediately
+
+## Manage user status
+
+Activate or deactivate users as needed:
+
+### Deactivate users
+
+Reasons to deactivate:
+- Employee leaves the company
+- Temporary suspension
+- Role change pending
+- Account security concern
+
+**To deactivate:**
+1. Click the **deactivate icon** (user with slash) next to active user
+2. Confirm the action
+3. User immediately loses access
+4. Historical data remains intact
+
+### Reactivate users
+
+Restore access to inactive users:
+1. Click the **activate icon** (user with check) next to inactive user
+2. Confirm the action
+3. User can log in with existing password
+4. All previous settings restored
+
+<Check>
+Reactivating a user restores their role, permissions, and preferences exactly as they were.
+</Check>
+
+## Change user roles
+
+Switch users between Administrator and Employee roles:
+
+### When to change roles
+
+<CardGroup cols={2}>
+  <Card title="Promote to admin" icon="arrow-up">
+    - Employee takes on management duties
+    - Need additional admin coverage
+    - User requires advanced features
+  </Card>
+  <Card title="Demote to employee" icon="arrow-down">
+    - Admin transitions to operational role
+    - Reduce permission scope
+    - Temporary role adjustment
+  </Card>
+</CardGroup>
+
+### How to change roles
+
+<Steps>
+  <Step title="Click role icon">
+    Click the **gear icon** next to the user
+  </Step>
+  <Step title="Review confirmation">
+    System shows current and new role details
+  </Step>
+  <Step title="Confirm change">
+    Click **Change Role** button
+  </Step>
+  <Step title="Immediate effect">
+    New permissions apply immediately (user may need to refresh)
+  </Step>
+</Steps>
+
+<Warning>
+Role changes are immediate. If a user is currently logged in, they may need to refresh their browser to see updated permissions.
+</Warning>
+
+## Search and filter users
+
+Find specific users quickly:
+
+### Search functionality
+
+The search bar matches:
+- Email addresses
+- First names
+- Last names
+- Partial matches work
+
+Search is case-insensitive and updates results in real-time.
+
+### Filter options
+
+<Accordion title="Filter by role">
+  - All users
+  - Administrators only
+  - Employees only
+</Accordion>
+
+<Accordion title="Filter by status">
+  - All statuses
+  - Active users only
+  - Inactive users only
+</Accordion>
+
+<Tip>
+Combine search and filters: Search for "john" + filter "Active" + filter "Employee" to find active employees named John.
+</Tip>
+
+## Pagination
+
+User list displays in pages:
+
+### Default settings
+- 10 users per page
+- Page navigation at bottom
+- Jump to specific page number
+- Total user count displayed
+
+### Navigation controls
+
+- **Previous**: Go to previous page (disabled on page 1)
+- **Page numbers**: Click to jump directly
+- **Next**: Go to next page (disabled on last page)
+- **Ellipsis (...)**: Indicates hidden page numbers
+
+## User permissions matrix
+
+Complete breakdown of role capabilities:
+
+| Feature | Admin | Employee |
+|---------|-------|----------|
+| **User Management** |
+| View users | ✓ | ✗ |
+| Create users | ✓ | ✗ |
+| Edit users | ✓ | ✗ |
+| Change roles | ✓ | ✗ |
+| Activate/deactivate | ✓ | ✗ |
+| **Inventory** |
+| View products | ✓ | ✓ |
+| Add products | ✓ | ✗ |
+| Edit products | ✓ | ✗ |
+| Delete products | ✓ | ✗ |
+| Manage categories | ✓ | ✗ |
+| **Sales** |
+| Process sales | ✓ | ✓ |
+| View sales history | ✓ | ✓ |
+| Modify sales | ✓ | ✗ |
+| Delete sales | ✓ | ✗ |
+| Export sales | ✓ | ✗ |
+| **Customers** |
+| View customers | ✓ | ✓ |
+| Add customers | ✓ | ✓ |
+| Edit customers | ✓ | ✓ |
+| Delete customers | ✓ | ✗ |
+| **Analytics** |
+| View dashboards | ✓ | ✓ |
+| Export reports | ✓ | ✗ |
+| Financial data | ✓ | ✗ |
+| **Alerts** |
+| View alerts | ✓ | ✓ |
+| Manage alerts | ✓ | ✓ |
+| Configure thresholds | ✓ | ✗ |
+| Generate alerts | ✓ | ✗ |
+| **Settings** |
+| System settings | ✓ | ✗ |
+| Business configuration | ✓ | ✗ |
+| Integration settings | ✓ | ✗ |
+
+## Security features
+
+### Authentication
+
+CEMAC uses secure authentication:
+
+<CardGroup cols={2}>
+  <Card title="Token-based auth" icon="key">
+    JWT tokens for session management
+  </Card>
+  <Card title="Secure storage" icon="lock">
+    Encrypted password storage
+  </Card>
+  <Card title="Session timeout" icon="clock">
+    Automatic logout after inactivity
+  </Card>
+  <Card title="Login monitoring" icon="shield">
+    Track failed login attempts
+  </Card>
+</CardGroup>
+
+### Password security
+
+Best practices enforced:
+- Passwords are hashed, never stored in plain text
+- Minimum length requirements
+- Users can change own password anytime
+- Admins cannot view user passwords
+
+<Info>
+If a user forgets their password, admins can create a new password for them, but cannot retrieve the old one.
+</Info>
+
+## Audit trail
+
+Track user activities:
+
+### Logged actions
+
+The system records:
+- User logins and logouts
+- Role changes
+- Status changes (activate/deactivate)
+- Failed login attempts
+- Critical operations
+
+### Vendor tracking in sales
+
+Every sale records:
+- Which user processed it
+- When it was processed
+- User's role at the time
+- Any modifications made
+
+<Check>
+Audit logs help with accountability, troubleshooting, and compliance.
+</Check>
+
+## Best practices
+
+Recommendations for user management:
+
+<CardGroup cols={2}>
+  <Card title="Minimum admins" icon="user-shield">
+    Have at least 2 admins to prevent lockouts, but not too many to maintain security
+  </Card>
+  <Card title="Regular review" icon="calendar-check">
+    Quarterly review of active users and remove those who no longer need access
+  </Card>
+  <Card title="Strong passwords" icon="lock">
+    Enforce strong password policies and regular password changes
+  </Card>
+  <Card title="Role appropriateness" icon="user-tag">
+    Only grant admin access to users who truly need it for their responsibilities
+  </Card>
+</CardGroup>

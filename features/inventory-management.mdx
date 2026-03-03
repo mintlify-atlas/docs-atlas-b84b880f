@@ -1,0 +1,222 @@
+---
+title: 'Inventory management'
+description: 'Manage your stationery products with advanced filtering, search, and stock tracking'
+icon: 'boxes-stacked'
+---
+
+CEMAC's inventory management system gives you complete control over your stationery products with powerful filtering, real-time stock tracking, and automated alerts.
+
+## Product management
+
+### Add new products
+
+Create products with comprehensive details:
+
+<Steps>
+  <Step title="Open the product form">
+    Click **Add Product** button in the inventory view
+  </Step>
+  <Step title="Enter product information">
+    Fill in required fields:
+    - Product name and description
+    - Price (regular and promotional)
+    - Category, brand, and supplier
+    - Barcode and supplier code
+  </Step>
+  <Step title="Configure stock availability">
+    Choose between:
+    - **Limited stock**: Set specific quantity
+    - **Unlimited**: Always available
+  </Step>
+  <Step title="Upload product image">
+    Drag and drop or select an image file for visual reference
+  </Step>
+</Steps>
+
+<Note>
+Products support both individual unit tracking and box management. Enable box management to track products by case quantities.
+</Note>
+
+### Box management
+
+For products sold in bulk, enable box management to track inventory at both the box and unit level:
+
+<CardGroup cols={2}>
+  <Card title="Units per box" icon="box">
+    Define how many individual pieces come in each box
+  </Card>
+  <Card title="Box stock" icon="warehouse">
+    Track the number of boxes in inventory
+  </Card>
+  <Card title="Loose units" icon="cube">
+    Track individual units not in complete boxes
+  </Card>
+  <Card title="Auto calculation" icon="calculator">
+    Total stock automatically calculates: (boxes × units per box) + loose units
+  </Card>
+</CardGroup>
+
+### Update products
+
+Edit existing products by clicking the edit icon on any product card. All product details can be modified except:
+- Product ID (auto-generated)
+- Creation date
+
+<Warning>
+Only administrators can update or delete products. Regular users have read-only access.
+</Warning>
+
+## Search and filtering
+
+Find products quickly with advanced search and filtering capabilities.
+
+### Smart search
+
+The header search bar searches across:
+- Product names
+- Descriptions  
+- Barcodes
+- Supplier codes
+
+Search updates results in real-time as you type, with automatic debouncing to optimize performance.
+
+### Filter options
+
+Refine your inventory view with multiple filter criteria:
+
+<AccordionGroup>
+  <Accordion title="Category filter">
+    Filter by product category. Categories are customizable and show the number of products in each category.
+  </Accordion>
+  <Accordion title="Brand filter">
+    Filter by manufacturer or brand name. View all products from specific suppliers.
+  </Accordion>
+  <Accordion title="Supplier filter">
+    Filter by supplier to see which products come from each vendor.
+  </Accordion>
+  <Accordion title="Price range filter">
+    Filter products by price brackets:
+    - $0 - $50
+    - $50 - $100
+    - $100 - $500
+    - $500+
+  </Accordion>
+  <Accordion title="Availability filter">
+    Filter by stock status:
+    - **Limited**: Products with specific stock quantities
+    - **Unlimited**: Always-available products
+    - **Out of stock**: Products with zero inventory
+  </Accordion>
+</AccordionGroup>
+
+### Sorting options
+
+Sort your inventory by:
+- Product name (A-Z or Z-A)
+- Price (low to high or high to low)
+- Date added (newest or oldest)
+- Stock level (low to high or high to low)
+
+<Tip>
+Combine multiple filters to create custom inventory views. For example, filter by category "Notebooks" + price range "$0-$50" + sort by "Stock: Low to High" to prioritize restocking.
+</Tip>
+
+## Stock tracking
+
+### View stock levels
+
+Each product card displays:
+- Current stock quantity
+- Availability status (limited/unlimited)
+- Stock indicator icon
+- Visual low-stock warnings
+
+### Stock history
+
+View the complete stock movement history for any product:
+- Stock additions from suppliers
+- Stock deductions from sales
+- Manual adjustments
+- Timestamp and user information
+
+### Stock alerts
+
+CEMAC automatically monitors inventory levels and generates alerts when:
+- Stock falls below minimum threshold
+- Products are out of stock
+- Stock levels are critical
+
+See [Alerts & Notifications](/features/alerts-notifications) for more details on managing stock alerts.
+
+## Categories, brands, and suppliers
+
+### Manage categories
+
+Organize products with custom categories:
+
+1. Click **Manage Categories** in the inventory view
+2. Create new categories with names and descriptions
+3. Edit or delete existing categories
+4. View product count per category
+
+<Info>
+Categories with associated products cannot be deleted. Reassign or remove products first.
+</Info>
+
+### Manage brands
+
+Track product manufacturers:
+
+1. Click **Manage Brands** in the product form
+2. Add brands with name and description
+3. View product count per brand
+4. Edit or archive brands
+
+### Manage suppliers
+
+Maintain supplier relationships:
+
+1. Click **Manage Suppliers** in the product form
+2. Add suppliers with contact information:
+   - Name
+   - Email
+   - Phone
+   - Address
+3. Mark suppliers as active/inactive
+4. View products from each supplier
+
+## Pagination and display
+
+Inventory displays in paginated views:
+- 10, 25, 50, or 100 products per page
+- Page navigation controls
+- Total product count display
+- Jump to specific page numbers
+
+<CardGroup cols={2}>
+  <Card title="Performance optimized" icon="gauge-high">
+    Pagination ensures fast loading even with thousands of products
+  </Card>
+  <Card title="Responsive design" icon="mobile-screen">
+    Product cards adapt to different screen sizes for mobile and desktop
+  </Card>
+</CardGroup>
+
+## Permissions
+
+Inventory management respects user roles:
+
+| Action | Admin | Employee |
+|--------|-------|----------|
+| View products | ✓ | ✓ |
+| Search/filter | ✓ | ✓ |
+| Add products | ✓ | ✗ |
+| Edit products | ✓ | ✗ |
+| Delete products | ✓ | ✗ |
+| Manage categories | ✓ | ✗ |
+| Manage brands | ✓ | ✗ |
+| Manage suppliers | ✓ | ✗ |
+
+<Check>
+Regular employees can view full inventory details and use search/filtering but cannot make changes.
+</Check>

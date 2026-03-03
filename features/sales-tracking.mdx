@@ -1,0 +1,332 @@
+---
+title: 'Sales tracking'
+description: 'Process sales transactions, manage customers, and track your daily revenue'
+icon: 'cash-register'
+---
+
+CEMAC's sales tracking system streamlines the checkout process with product search, customer management, payment processing, and detailed sales history.
+
+## Process a sale
+
+### Create a new transaction
+
+The sales interface is designed for speed and efficiency:
+
+<Steps>
+  <Step title="Select customer">
+    Search for existing customers or enter a new customer name. Customer selection is optional - sales can be made to "General Customer".
+  </Step>
+  <Step title="Choose vendor">
+    Select the employee processing the sale. Defaults to the currently logged-in user.
+  </Step>
+  <Step title="Add products">
+    Use the product search bar to find and add items:
+    - Type product name, barcode, or code
+    - Results appear in real-time dropdown
+    - Click to add product to cart
+    - Adjust quantities with +/- buttons
+  </Step>
+  <Step title="Apply discounts and taxes">
+    Optionally add:
+    - Percentage discount (0-100%)
+    - IVA/tax percentage (0-100%)
+    - Quick preset buttons for common values
+  </Step>
+  <Step title="Select payment method">
+    Choose from:
+    - Cash (efectivo)
+    - Card (tarjeta)
+    - Transfer (transferencia)
+    - Check (cheque)  
+    - Digital wallet (digital)
+  </Step>
+  <Step title="Add notes">
+    Include optional transaction notes or special instructions
+  </Step>
+  <Step title="Process payment">
+    Click **Cobrar** (Charge) to complete the sale
+  </Step>
+</Steps>
+
+<Note>
+The system automatically calculates subtotals, discounts, taxes, and final totals in real-time as you build the sale.
+</Note>
+
+### Product search
+
+The sales product search is optimized for speed:
+
+<CardGroup cols={2}>
+  <Card title="Instant search" icon="magnifying-glass">
+    Results appear as you type with 300ms debouncing
+  </Card>
+  <Card title="Multiple match fields" icon="list-check">
+    Searches product names, categories, barcodes, and supplier codes
+  </Card>
+  <Card title="Stock visibility" icon="box">
+    Each result shows current stock availability
+  </Card>
+  <Card title="Pricing display" icon="tags">
+    Shows both regular and promotional prices
+  </Card>
+</CardGroup>
+
+### Quantity management
+
+For each product in the cart:
+- Click **+** to increase quantity
+- Click **-** to decrease quantity
+- Click **trash icon** to remove from cart
+- Quantities are validated against available stock
+
+<Warning>
+The system prevents selling more units than available in stock for limited-inventory products. Unlimited products have no quantity restrictions.
+</Warning>
+
+## Discounts and taxes
+
+### Apply discounts
+
+Offer discounts in multiple ways:
+
+<Accordion title="Manual percentage entry">
+  Type any discount percentage from 0-100% in the discount field
+</Accordion>
+
+<Accordion title="Preset discount buttons">
+  Quick buttons for common discounts:
+  - 5%
+  - 10%
+  - 15%
+  - 20%
+</Accordion>
+
+<Info>
+Discounts are calculated on the subtotal before taxes are applied.
+</Info>
+
+### Apply taxes
+
+Add IVA or sales tax:
+
+<Accordion title="Manual percentage entry">
+  Type any tax percentage from 0-100% in the tax field
+</Accordion>
+
+<Accordion title="Preset tax buttons">
+  Quick buttons for common tax rates:
+  - 8%
+  - 16%
+  - Other configurable rates
+</Accordion>
+
+### Total calculation
+
+The system automatically calculates:
+
+```
+Subtotal = Sum of (product price × quantity)
+Discount Amount = Subtotal × (discount % ÷ 100)
+Subtotal After Discount = Subtotal - Discount Amount
+Tax Amount = Subtotal After Discount × (tax % ÷ 100)
+Final Total = Subtotal After Discount + Tax Amount
+```
+
+<Check>
+All calculations update in real-time as you modify quantities, discounts, or taxes.
+</Check>
+
+## Payment methods
+
+Select the payment method that matches how the customer paid:
+
+| Method | Icon | Use Case |
+|--------|------|----------|
+| Cash | 💵 | Physical currency |
+| Card | 💳 | Credit/debit card |
+| Transfer | 🏦 | Bank transfer |
+| Check | 📝 | Paper check |
+| Digital | 📱 | Digital wallets (PayPal, Venmo, etc.) |
+
+<Tip>
+The selected payment method is saved with the transaction for reporting and reconciliation purposes.
+</Tip>
+
+## Sales history
+
+### View past transactions
+
+The sales history panel displays all recent transactions with:
+- Customer name
+- Date and time
+- Number of products
+- Total amount
+- Payment method
+
+### Filter sales
+
+Refine the sales list by time period:
+
+<CardGroup cols={2}>
+  <Card title="Today" icon="calendar-day">
+    View only today's transactions
+  </Card>
+  <Card title="This week" icon="calendar-week">
+    Last 7 days of sales
+  </Card>
+  <Card title="This month" icon="calendar">
+    Last 30 days of sales
+  </Card>
+  <Card title="All time" icon="infinity">
+    Complete sales history
+  </Card>
+</CardGroup>
+
+### Search transactions
+
+Use the search bar to find sales by customer name. The search is case-insensitive and matches partial names.
+
+### Sales statistics
+
+The history panel shows real-time statistics:
+- **Total sales amount**: Sum of all visible transactions
+- **Transaction count**: Number of sales in the current view
+
+<Note>
+Statistics update automatically as you apply filters or search terms.
+</Note>
+
+## Transaction details
+
+Click any sale in the history to view the complete receipt:
+
+<Steps>
+  <Step title="Transaction header">
+    - Ticket number (unique ID)
+    - Date and time
+    - Customer and vendor names
+  </Step>
+  <Step title="Product list">
+    Each product shows:
+    - Product name
+    - Quantity and unit price
+    - Line total
+  </Step>
+  <Step title="Financial summary">
+    - Subtotal
+    - Discount amount (if applied)
+    - Tax amount (if applied)
+    - Final total
+  </Step>
+  <Step title="Payment information">
+    - Payment method
+    - Transaction notes (if any)
+  </Step>
+</Steps>
+
+### Print receipts
+
+Generate printer-friendly receipts:
+- Click **Print** button in transaction details
+- Opens print dialog with formatted receipt
+- Optimized for thermal receipt printers
+- Includes all transaction details
+
+## Customer management
+
+Integrated customer tracking:
+
+### Link sales to customers
+
+1. Search for existing customers by name, email, or phone
+2. Select from dropdown results
+3. Customer details auto-populate
+4. Sale is linked to customer record
+
+### Create new customers
+
+Add customers on-the-fly during sales:
+- Enter customer name in the search field
+- If not found, create a new customer record
+- Add contact details and preferences
+- Complete the sale with linked customer
+
+<Info>
+Customer data syncs with the customer management module for loyalty tracking and purchase history.
+</Info>
+
+## Vendor tracking
+
+Every sale records the employee who processed it:
+
+### Automatic vendor selection
+
+The system automatically selects the logged-in user as the vendor:
+- User's full name appears in the vendor field
+- Selection persists across multiple sales
+- Speeds up checkout process
+
+### Manual vendor selection
+
+<Accordion title="When to use">
+  - Admin processing sale on behalf of employee
+  - Shift changes
+  - Training scenarios
+</Accordion>
+
+<Accordion title="How to change">
+  Click the vendor selector dropdown and choose a different active employee from the list.
+</Accordion>
+
+## Export sales data
+
+Export transaction data for external analysis:
+
+1. Click **Export** button in sales view
+2. System generates CSV file with all visible sales
+3. Includes all transaction details
+4. Downloads automatically to your device
+
+### CSV format
+
+Exported files include columns:
+- Transaction ID
+- Date
+- Customer name
+- Vendor name
+- Subtotal
+- Discount amount
+- Tax amount
+- Total
+- Payment method
+- Status
+
+<Tip>
+Apply filters before exporting to generate custom reports for specific time periods, customers, or vendors.
+</Tip>
+
+## Real-time updates
+
+The sales system updates instantly:
+- **Daily counters**: Sales count and revenue update after each transaction
+- **Inventory sync**: Stock levels decrease automatically
+- **Customer stats**: Purchase history updates immediately
+- **History refresh**: New sales appear in the history panel
+
+## Permissions
+
+Sales tracking respects user roles:
+
+| Action | Admin | Employee |
+|--------|-------|----------|
+| Process sales | ✓ | ✓ |
+| View sales history | ✓ | ✓ |
+| View transaction details | ✓ | ✓ |
+| Print receipts | ✓ | ✓ |
+| Export sales data | ✓ | ✓ |
+| Modify past sales | ✓ | ✗ |
+| Delete transactions | ✓ | ✗ |
+
+<Check>
+All users can process sales and view history. Only admins can modify or delete past transactions.
+</Check>

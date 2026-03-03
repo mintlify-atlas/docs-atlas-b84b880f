@@ -1,0 +1,584 @@
+---
+title: 'Sales'
+description: 'API endpoints for managing sales and transactions'
+---
+
+## Search Products for Sale
+
+<api method="GET" path="/sales/products/search" auth="bearer">
+  Search for products available for sale with stock information.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="search" type="string">
+  Search term to filter products
+</ParamField>
+
+<ParamField query="limit" type="number" default="10">
+  Maximum number of results to return
+</ParamField>
+
+<ParamField query="includeStock" type="boolean" default="true">
+  Include stock information in response
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the search was successful
+</ResponseField>
+
+<ResponseField name="products" type="array">
+  Array of products matching the search criteria
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET "https://cemac-api.vercel.app/sales/products/search?search=cuaderno&limit=10&includeStock=true" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "products": [
+    {
+      "id": "prod_123",
+      "name": "Cuaderno Profesional 100 hojas",
+      "price": 45.50,
+      "stock": 150,
+      "availability": "available"
+    }
+  ]
+}
+```
+
+### Error Codes
+
+- `401` - Unauthorized
+- `500` - Internal server error
+
+---
+
+## Get Vendors
+
+<api method="GET" path="/sales/users/vendedores" auth="bearer">
+  Retrieve a list of vendors/sellers in the system.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="includeInactive" type="boolean" default="false">
+  Include inactive vendors in the results
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="vendedores" type="array">
+  Array of vendor objects
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET "https://cemac-api.vercel.app/sales/users/vendedores?includeInactive=false" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "vendedores": [
+    {
+      "id": "user_123",
+      "firstName": "Juan",
+      "lastName": "Pérez",
+      "email": "juan.perez@example.com",
+      "role": "vendedor",
+      "active": true
+    }
+  ]
+}
+```
+
+---
+
+## Create Sale
+
+<api method="POST" path="/sales" auth="bearer">
+  Create a new sale transaction.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Request Body
+
+<ParamField body="cliente" type="string" required>
+  Customer name or ID
+</ParamField>
+
+<ParamField body="vendedor" type="string" required>
+  Vendor/seller ID
+</ParamField>
+
+<ParamField body="products" type="array" required>
+  Array of products being sold
+</ParamField>
+
+<ParamField body="products[].productId" type="string" required>
+  Product ID
+</ParamField>
+
+<ParamField body="products[].productName" type="string" required>
+  Product name
+</ParamField>
+
+<ParamField body="products[].quantity" type="number" required>
+  Quantity being sold
+</ParamField>
+
+<ParamField body="products[].price" type="number" required>
+  Unit price
+</ParamField>
+
+<ParamField body="products[].totalPrice" type="number" required>
+  Total price for this product (quantity × price)
+</ParamField>
+
+<ParamField body="subtotal" type="number" required>
+  Subtotal before discounts and taxes
+</ParamField>
+
+<ParamField body="discountAmount" type="number" default="0">
+  Discount amount applied
+</ParamField>
+
+<ParamField body="ivaAmount" type="number" default="0">
+  Tax (IVA) amount
+</ParamField>
+
+<ParamField body="total" type="number" required>
+  Total sale amount
+</ParamField>
+
+<ParamField body="paymentMethod" type="string" required>
+  Payment method (e.g., "Efectivo", "Tarjeta", "Transferencia")
+</ParamField>
+
+<ParamField body="status" type="string" default="completada">
+  Sale status
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the sale was created
+</ResponseField>
+
+<ResponseField name="sale" type="object">
+  Created sale object with ID
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success or error message
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X POST https://cemac-api.vercel.app/sales \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cliente": "María González",
+    "vendedor": "user_123",
+    "products": [
+      {
+        "productId": "prod_123",
+        "productName": "Cuaderno A4",
+        "quantity": 5,
+        "price": 45.50,
+        "totalPrice": 227.50
+      }
+    ],
+    "subtotal": 227.50,
+    "discountAmount": 0,
+    "ivaAmount": 36.40,
+    "total": 263.90,
+    "paymentMethod": "Efectivo",
+    "status": "completada"
+  }'
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "sale": {
+    "id": "sale_789",
+    "date": "2025-11-16",
+    "cliente": "María González",
+    "vendedor": "user_123",
+    "total": 263.90,
+    "status": "completada",
+    "createdAt": "2025-11-16T14:30:00Z"
+  },
+  "message": "Venta creada exitosamente"
+}
+```
+
+### Error Codes
+
+- `400` - Invalid input or insufficient stock
+- `401` - Unauthorized
+- `500` - Internal server error
+
+---
+
+## Get Sales
+
+<api method="GET" path="/sales" auth="bearer">
+  Retrieve sales history with filtering and pagination.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="page" type="number" default="1">
+  Page number for pagination
+</ParamField>
+
+<ParamField query="limit" type="number" default="10">
+  Number of sales per page
+</ParamField>
+
+<ParamField query="startDate" type="string">
+  Filter sales from this date (ISO 8601 format)
+</ParamField>
+
+<ParamField query="endDate" type="string">
+  Filter sales until this date (ISO 8601 format)
+</ParamField>
+
+<ParamField query="vendedor" type="string">
+  Filter by vendor ID
+</ParamField>
+
+<ParamField query="cliente" type="string">
+  Filter by customer name
+</ParamField>
+
+<ParamField query="status" type="string">
+  Filter by sale status
+</ParamField>
+
+<ParamField query="sortBy" type="string">
+  Field to sort by
+</ParamField>
+
+<ParamField query="sortOrder" type="string">
+  Sort order: "asc" or "desc"
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="sales" type="array">
+  Array of sale objects
+</ResponseField>
+
+<ResponseField name="pagination" type="object">
+  Pagination information
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET "https://cemac-api.vercel.app/sales?page=1&limit=10&startDate=2025-11-01" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "sales": [
+    {
+      "id": "sale_789",
+      "date": "2025-11-16",
+      "cliente": "María González",
+      "vendedor": "Juan Pérez",
+      "subtotal": 227.50,
+      "discountAmount": 0,
+      "ivaAmount": 36.40,
+      "total": 263.90,
+      "status": "completada",
+      "paymentMethod": "Efectivo",
+      "products": [
+        {
+          "productId": "prod_123",
+          "productName": "Cuaderno A4",
+          "quantity": 5,
+          "price": 45.50,
+          "totalPrice": 227.50
+        }
+      ]
+    }
+  ],
+  "pagination": {
+    "total": 45,
+    "page": 1,
+    "limit": 10,
+    "totalPages": 5
+  }
+}
+```
+
+---
+
+## Get Sale by ID
+
+<api method="GET" path="/sales/{saleId}" auth="bearer">
+  Retrieve details of a specific sale.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="saleId" type="string" required>
+  ID of the sale to retrieve
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the sale was found
+</ResponseField>
+
+<ResponseField name="sale" type="object">
+  Sale object with complete details
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET https://cemac-api.vercel.app/sales/sale_789 \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "sale": {
+    "id": "sale_789",
+    "date": "2025-11-16",
+    "cliente": "María González",
+    "vendedor": "Juan Pérez",
+    "total": 263.90,
+    "status": "completada",
+    "products": [
+      {
+        "productId": "prod_123",
+        "productName": "Cuaderno A4",
+        "quantity": 5,
+        "price": 45.50,
+        "totalPrice": 227.50
+      }
+    ]
+  }
+}
+```
+
+### Error Codes
+
+- `401` - Unauthorized
+- `404` - Sale not found
+- `500` - Internal server error
+
+---
+
+## Update Sale Status
+
+<api method="PUT" path="/sales/{saleId}/status" auth="bearer">
+  Update the status of a sale.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="saleId" type="string" required>
+  ID of the sale to update
+</ParamField>
+
+### Request Body
+
+<ParamField body="status" type="string" required>
+  New status (e.g., "completada", "cancelada", "pendiente")
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the update was successful
+</ResponseField>
+
+<ResponseField name="sale" type="object">
+  Updated sale object
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X PUT https://cemac-api.vercel.app/sales/sale_789/status \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"status": "cancelada"}'
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "sale": {
+    "id": "sale_789",
+    "status": "cancelada",
+    "updatedAt": "2025-11-16T15:00:00Z"
+  }
+}
+```
+
+---
+
+## Get Sales Report
+
+<api method="GET" path="/sales/reports/summary" auth="bearer">
+  Generate a sales summary report for a given period.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="startDate" type="string">
+  Report start date (ISO 8601 format)
+</ParamField>
+
+<ParamField query="endDate" type="string">
+  Report end date (ISO 8601 format)
+</ParamField>
+
+<ParamField query="vendedor" type="string">
+  Filter by specific vendor
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the report was generated
+</ResponseField>
+
+<ResponseField name="report" type="object">
+  Summary report data
+</ResponseField>
+
+<ResponseField name="report.totalSales" type="number">
+  Total number of sales
+</ResponseField>
+
+<ResponseField name="report.totalRevenue" type="number">
+  Total revenue amount
+</ResponseField>
+
+<ResponseField name="report.averageOrderValue" type="number">
+  Average order value
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET "https://cemac-api.vercel.app/sales/reports/summary?startDate=2025-11-01&endDate=2025-11-16" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "report": {
+    "period": {
+      "startDate": "2025-11-01",
+      "endDate": "2025-11-16"
+    },
+    "totalSales": 45,
+    "totalRevenue": 12500.75,
+    "averageOrderValue": 277.79,
+    "topProducts": [
+      {
+        "productId": "prod_123",
+        "productName": "Cuaderno A4",
+        "quantitySold": 150,
+        "revenue": 6825.00
+      }
+    ]
+  }
+}
+```
+
+### Error Codes
+
+- `401` - Unauthorized
+- `500` - Internal server error

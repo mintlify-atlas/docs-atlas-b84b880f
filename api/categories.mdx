@@ -1,0 +1,255 @@
+---
+title: 'Categories API'
+description: 'Category management endpoints'
+---
+
+## Get All Categories
+
+Retrieve a list of all categories with optional search filtering.
+
+<CodeGroup>
+```bash cURL
+curl -X GET "https://cemac-api.vercel.app/categories?search=" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+</CodeGroup>
+
+**Authentication:** Required (Bearer Token)
+
+**Method:** `GET`
+
+**Endpoint:** `/categories`
+
+### Query Parameters
+
+<ParamField query="search" type="string">
+  Search term to filter categories by name
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="categories" type="array">
+  Array of category objects
+  <Expandable title="Category object properties">
+    <ResponseField name="id" type="string">
+      Unique category identifier
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Category name
+    </ResponseField>
+    <ResponseField name="description" type="string">
+      Description of the category
+    </ResponseField>
+    <ResponseField name="productCount" type="number">
+      Number of products in this category
+    </ResponseField>
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp of creation
+    </ResponseField>
+    <ResponseField name="updatedAt" type="string">
+      ISO 8601 timestamp of last update
+    </ResponseField>
+    <ResponseField name="createdBy" type="string">
+      User ID who created the category
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="total" type="number">
+  Total number of categories
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Response message
+</ResponseField>
+
+---
+
+## Create Category
+
+Create a new category.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://cemac-api.vercel.app/categories \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Electronics",
+    "description": "Electronic devices and accessories"
+  }'
+```
+</CodeGroup>
+
+**Authentication:** Required (Bearer Token)
+
+**Method:** `POST`
+
+**Endpoint:** `/categories`
+
+### Request Body
+
+<ParamField body="name" type="string" required>
+  Category name
+</ParamField>
+
+<ParamField body="description" type="string">
+  Description of the category
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the category was created successfully
+</ResponseField>
+
+<ResponseField name="category" type="object">
+  Created category object
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success message
+</ResponseField>
+
+---
+
+## Update Category
+
+Update an existing category's information.
+
+<CodeGroup>
+```bash cURL
+curl -X PUT https://cemac-api.vercel.app/categories/CATEGORY_ID \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Consumer Electronics",
+    "description": "Consumer electronic devices, gadgets, and accessories"
+  }'
+```
+</CodeGroup>
+
+**Authentication:** Required (Bearer Token)
+
+**Method:** `PUT`
+
+**Endpoint:** `/categories/{categoryId}`
+
+### Path Parameters
+
+<ParamField path="categoryId" type="string" required>
+  Unique identifier of the category
+</ParamField>
+
+### Request Body
+
+<ParamField body="name" type="string">
+  Updated category name
+</ParamField>
+
+<ParamField body="description" type="string">
+  Updated description
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the category was updated successfully
+</ResponseField>
+
+<ResponseField name="category" type="object">
+  Updated category object
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success message
+</ResponseField>
+
+---
+
+## Delete Category
+
+Delete a category from the system.
+
+<CodeGroup>
+```bash cURL
+curl -X DELETE https://cemac-api.vercel.app/categories/CATEGORY_ID \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+</CodeGroup>
+
+**Authentication:** Required (Bearer Token)
+
+**Method:** `DELETE`
+
+**Endpoint:** `/categories/{categoryId}`
+
+### Path Parameters
+
+<ParamField path="categoryId" type="string" required>
+  Unique identifier of the category to delete
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the category was deleted successfully
+</ResponseField>
+
+<ResponseField name="categoryId" type="string">
+  ID of the deleted category
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success message
+</ResponseField>
+
+---
+
+## Get Category Statistics
+
+Retrieve detailed statistics for a specific category.
+
+<CodeGroup>
+```bash cURL
+curl -X GET https://cemac-api.vercel.app/categories/CATEGORY_ID/stats \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+</CodeGroup>
+
+**Authentication:** Required (Bearer Token)
+
+**Method:** `GET`
+
+**Endpoint:** `/categories/{categoryId}/stats`
+
+### Path Parameters
+
+<ParamField path="categoryId" type="string" required>
+  Unique identifier of the category
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="category" type="object">
+  Category details
+</ResponseField>
+
+<ResponseField name="stats" type="object">
+  Category statistics including product counts, stock levels, and pricing information
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Response message
+</ResponseField>

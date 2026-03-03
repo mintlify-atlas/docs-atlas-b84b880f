@@ -1,0 +1,508 @@
+---
+title: 'Inventory'
+description: 'API endpoints for managing product inventory'
+---
+
+## Get Products
+
+<api method="GET" path="/inventory" auth="bearer">
+  Retrieve a list of products with optional filtering and pagination.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="search" type="string">
+  Search term to filter products by name or description
+</ParamField>
+
+<ParamField query="category" type="string">
+  Filter by product category
+</ParamField>
+
+<ParamField query="brand" type="string">
+  Filter by product brand
+</ParamField>
+
+<ParamField query="supplier" type="string">
+  Filter by supplier
+</ParamField>
+
+<ParamField query="availability" type="string">
+  Filter by availability status (e.g., "available", "limited", "unlimited")
+</ParamField>
+
+<ParamField query="minPrice" type="number">
+  Minimum price filter
+</ParamField>
+
+<ParamField query="maxPrice" type="number">
+  Maximum price filter
+</ParamField>
+
+<ParamField query="page" type="number" default="1">
+  Page number for pagination
+</ParamField>
+
+<ParamField query="limit" type="number" default="10">
+  Number of items per page
+</ParamField>
+
+<ParamField query="sortBy" type="string">
+  Field to sort by (e.g., "name", "price", "stock")
+</ParamField>
+
+<ParamField query="sortOrder" type="string">
+  Sort order: "asc" or "desc"
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="products" type="array">
+  Array of product objects
+</ResponseField>
+
+<ResponseField name="pagination" type="object">
+  Pagination information including total, pages, current page
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET "https://cemac-api.vercel.app/inventory?page=1&limit=10&category=Cuadernos" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "products": [
+    {
+      "id": "prod_123",
+      "name": "Cuaderno Profesional 100 hojas",
+      "description": "Cuaderno rayado profesional",
+      "price": 45.50,
+      "stock": 150,
+      "category": "Cuadernos",
+      "brand": "Scribe",
+      "supplier": "Papelería Central",
+      "availability": "available",
+      "imageUrl": "https://example.com/image.jpg"
+    }
+  ],
+  "pagination": {
+    "total": 100,
+    "page": 1,
+    "limit": 10,
+    "totalPages": 10
+  }
+}
+```
+
+### Error Codes
+
+- `401` - Unauthorized - Invalid or missing token
+- `500` - Internal server error
+
+---
+
+## Create Product
+
+<api method="POST" path="/inventory" auth="bearer">
+  Create a new product in the inventory. Requires admin role.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Request Body (FormData)
+
+<ParamField body="name" type="string" required>
+  Product name
+</ParamField>
+
+<ParamField body="description" type="string">
+  Product description
+</ParamField>
+
+<ParamField body="price" type="number" required>
+  Product price
+</ParamField>
+
+<ParamField body="stock" type="number" required>
+  Initial stock quantity
+</ParamField>
+
+<ParamField body="category" type="string" required>
+  Product category
+</ParamField>
+
+<ParamField body="brand" type="string">
+  Product brand
+</ParamField>
+
+<ParamField body="supplier" type="string">
+  Supplier name
+</ParamField>
+
+<ParamField body="availability" type="string">
+  Availability status
+</ParamField>
+
+<ParamField body="image" type="file">
+  Product image file (multipart/form-data)
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the product was created
+</ResponseField>
+
+<ResponseField name="product" type="object">
+  Created product object
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success or error message
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X POST https://cemac-api.vercel.app/inventory \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "name=Cuaderno A4" \
+  -F "price=35.00" \
+  -F "stock=100" \
+  -F "category=Cuadernos" \
+  -F "image=@/path/to/image.jpg"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "product": {
+    "id": "prod_456",
+    "name": "Cuaderno A4",
+    "price": 35.00,
+    "stock": 100,
+    "category": "Cuadernos",
+    "imageUrl": "https://example.com/uploads/image.jpg",
+    "createdAt": "2025-11-16T10:30:00Z"
+  },
+  "message": "Producto creado exitosamente"
+}
+```
+
+### Error Codes
+
+- `400` - Invalid input or missing required fields
+- `401` - Unauthorized
+- `403` - Forbidden - Admin role required
+- `500` - Internal server error
+
+---
+
+## Update Product
+
+<api method="PUT" path="/inventory/{productId}" auth="bearer">
+  Update an existing product. Requires admin role.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="productId" type="string" required>
+  ID of the product to update
+</ParamField>
+
+### Request Body (FormData)
+
+<ParamField body="name" type="string">
+  Product name
+</ParamField>
+
+<ParamField body="description" type="string">
+  Product description
+</ParamField>
+
+<ParamField body="price" type="number">
+  Product price
+</ParamField>
+
+<ParamField body="stock" type="number">
+  Stock quantity
+</ParamField>
+
+<ParamField body="category" type="string">
+  Product category
+</ParamField>
+
+<ParamField body="brand" type="string">
+  Product brand
+</ParamField>
+
+<ParamField body="supplier" type="string">
+  Supplier name
+</ParamField>
+
+<ParamField body="availability" type="string">
+  Availability status
+</ParamField>
+
+<ParamField body="image" type="file">
+  New product image file
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if the update was successful
+</ResponseField>
+
+<ResponseField name="product" type="object">
+  Updated product object
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success or error message
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X PUT https://cemac-api.vercel.app/inventory/prod_123 \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "price=40.00" \
+  -F "stock=200"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "product": {
+    "id": "prod_123",
+    "name": "Cuaderno Profesional 100 hojas",
+    "price": 40.00,
+    "stock": 200,
+    "updatedAt": "2025-11-16T11:00:00Z"
+  },
+  "message": "Producto actualizado exitosamente"
+}
+```
+
+### Error Codes
+
+- `400` - Invalid input
+- `401` - Unauthorized
+- `403` - Forbidden - Admin role required
+- `404` - Product not found
+- `500` - Internal server error
+
+---
+
+## Delete Product
+
+<api method="DELETE" path="/inventory/{productId}" auth="bearer">
+  Delete a product from inventory. Requires admin role.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="productId" type="string" required>
+  ID of the product to delete
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if deletion was successful
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Confirmation message
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X DELETE https://cemac-api.vercel.app/inventory/prod_123 \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "message": "Producto eliminado exitosamente"
+}
+```
+
+### Error Codes
+
+- `401` - Unauthorized
+- `403` - Forbidden - Admin role required
+- `404` - Product not found
+- `500` - Internal server error
+
+---
+
+## Update Stock
+
+<api method="PUT" path="/inventory/products/{productId}/stock" auth="bearer">
+  Update the stock quantity of a product.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="productId" type="string" required>
+  ID of the product
+</ParamField>
+
+### Request Body
+
+<ParamField body="quantity" type="number" required>
+  Quantity to add or subtract
+</ParamField>
+
+<ParamField body="type" type="string" default="add">
+  Operation type: "add" or "subtract"
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if stock was updated
+</ResponseField>
+
+<ResponseField name="product" type="object">
+  Updated product with new stock
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X PUT https://cemac-api.vercel.app/inventory/products/prod_123/stock \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "quantity": 50,
+    "type": "add"
+  }'
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "product": {
+    "id": "prod_123",
+    "stock": 250,
+    "updatedAt": "2025-11-16T12:00:00Z"
+  }
+}
+```
+
+---
+
+## Get Stock History
+
+<api method="GET" path="/inventory/products/{productId}/stock-history" auth="bearer">
+  Retrieve the stock change history for a specific product.
+</api>
+
+### Headers
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token for authentication
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="productId" type="string" required>
+  ID of the product
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates if request was successful
+</ResponseField>
+
+<ResponseField name="history" type="array">
+  Array of stock change records
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET https://cemac-api.vercel.app/inventory/products/prod_123/stock-history \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "history": [
+    {
+      "id": "hist_001",
+      "productId": "prod_123",
+      "type": "add",
+      "quantity": 50,
+      "previousStock": 200,
+      "newStock": 250,
+      "timestamp": "2025-11-16T12:00:00Z",
+      "userId": "user_123"
+    }
+  ]
+}
+```
+
+### Error Codes
+
+- `401` - Unauthorized
+- `404` - Product not found
+- `500` - Internal server error

@@ -1,0 +1,345 @@
+---
+title: Viewing Analytics
+description: Understand your business performance with CEMAC's analytics dashboard
+---
+
+## Overview
+
+The analytics module provides real-time insights into your sales performance, inventory status, and business trends through interactive charts and key performance indicators.
+
+## Accessing Analytics
+
+<Steps>
+  <Step title="Navigate to Analytics">
+    Click "Análisis" in the sidebar navigation to open the analytics dashboard.
+  </Step>
+  
+  <Step title="View the dashboard">
+    The analytics page displays multiple sections:
+    - Top KPI cards showing today's metrics
+    - Inventory status chart
+    - Annual revenue summary
+    - Daily income and expenses trends
+  </Step>
+</Steps>
+
+## Today's Performance Metrics
+
+The top section shows four key performance indicators for today:
+
+### Total de Ventas (Revenue)
+
+<Info>
+Shows total sales revenue for the current day with percentage change from yesterday.
+</Info>
+
+- **Red gradient card** with bar chart icon
+- Displays total monetary value of sales
+- Shows percentage change (e.g., "+8% respecto a ayer")
+- Data sourced from `analyticsService.getTodayStats()`
+
+### Órdenes Totales (Total Orders)
+
+- **Yellow gradient card** with document icon
+- Shows count of completed transactions
+- Includes comparison to previous day
+- Helps track sales volume regardless of value
+
+### Productos Vendidos (Products Sold)
+
+- **Green gradient card** with users icon
+- Total quantity of items sold today
+- Useful for inventory turnover analysis
+- Shows growth percentage
+
+### Nuevos Clientes (New Customers)
+
+- **Purple gradient card** with tag icon
+- Count of unique customers who made purchases today
+- Tracks customer acquisition
+- Displays day-over-day change
+
+## Inventory Status Analysis
+
+The inventory chart visualizes stock availability:
+
+<Steps>
+  <Step title="View the donut chart">
+    The circular chart shows inventory distribution across three categories.
+  </Step>
+  
+  <Step title="Interpret the segments">
+    - **Green segment**: Productos disponibles (Available stock)
+    - **Yellow segment**: Stock bajo (Low stock - requires reordering)
+    - **Red segment**: Agotado (Out of stock)
+  </Step>
+  
+  <Step title="Check percentages">
+    Hover over segments to see exact counts and percentages.
+  </Step>
+</Steps>
+
+Data is calculated by `analyticsService.getInventoryAnalysis()`:
+- **Disponible**: Products with >10 units or unlimited availability
+- **Stock Bajo**: Products with 1-10 units remaining
+- **Agotado**: Products with 0 stock
+
+## Annual Revenue Summary
+
+The annual chart displays monthly revenue trends:
+
+<Steps>
+  <Step title="Review the line chart">
+    The chart shows revenue progression across the last 6 months.
+  </Step>
+  
+  <Step title="Identify trends">
+    Look for:
+    - Upward trends (business growth)
+    - Seasonal patterns
+    - Unusual drops (investigate causes)
+    - Peak months (prepare for similar periods)
+  </Step>
+  
+  <Step title="Compare months">
+    Hover over data points to see exact monthly revenue values.
+  </Step>
+</Steps>
+
+## Inventory Rotation
+
+The rotation chart shows which products are selling:
+
+<Info>
+Helps identify fast-moving vs. slow-moving inventory.
+</Info>
+
+- Displays product sales distribution
+- Highlights top-selling items
+- Identifies stagnant inventory that may need promotion
+- Informs purchasing decisions
+
+## Income Trends (Últimos 7 Días)
+
+The income line chart shows daily revenue:
+
+<Steps>
+  <Step title="View daily performance">
+    Chart displays the last 7 days of sales revenue.
+  </Step>
+  
+  <Step title="Identify patterns">
+    Look for:
+    - Weekday vs. weekend differences
+    - Best performing days
+    - Days that need attention
+  </Step>
+  
+  <Step title="Plan accordingly">
+    Use insights to:
+    - Schedule staff appropriately
+    - Plan promotions for slow days
+    - Prepare inventory for busy days
+  </Step>
+</Steps>
+
+Data retrieved via `analyticsService.getAnalyticsData()` which processes daily sales.
+
+## Expenses Tracking (Egresos)
+
+The expenses chart mirrors the income chart:
+
+- Shows daily operational costs
+- Helps monitor spending patterns
+- Supports profitability analysis
+- Highlights unusual expense spikes
+
+## Refreshing Analytics Data
+
+<Steps>
+  <Step title="Click Actualizar">
+    Click the purple "Actualizar" button in the top-right corner.
+  </Step>
+  
+  <Step title="Wait for refresh">
+    The system:
+    - Calls `analyticsService.getAnalyticsData()` to fetch latest data
+    - Updates all charts and KPIs
+    - Recalculates percentages and trends
+  </Step>
+  
+  <Step title="Review updated data">
+    All metrics now reflect the most current information.
+  </Step>
+</Steps>
+
+<Note>
+Analytics automatically refresh when you navigate to the page, but manual refresh ensures the latest data.
+</Note>
+
+## Understanding Calculations
+
+### Revenue Calculations
+
+```javascript
+// Today's total revenue
+const totalRevenue = sales.reduce((sum, sale) => sum + sale.total, 0);
+
+// Average order value
+const averageOrderValue = totalRevenue / totalOrders;
+```
+
+### Inventory Status
+
+```javascript
+// Products are classified as:
+if (product.availability === 'unlimited') {
+  // Disponible
+} else if (product.stock > 10) {
+  // Disponible  
+} else if (product.stock > 0) {
+  // Stock Bajo
+} else {
+  // Agotado
+}
+```
+
+### Growth Percentages
+
+```javascript
+// Calculate percentage change
+const growth = ((currentValue - previousValue) / previousValue) * 100;
+```
+
+## Key Insights to Monitor
+
+### Daily Performance
+
+<Steps>
+  <Step title="Check morning metrics">
+    Review today's KPIs each morning to set goals.
+  </Step>
+  
+  <Step title="Monitor throughout the day">
+    Refresh analytics periodically to track progress.
+  </Step>
+  
+  <Step title="Review end-of-day">
+    Compare final results to goals and previous days.
+  </Step>
+</Steps>
+
+### Inventory Health
+
+- **High disponible percentage** (>70%): Good stock levels
+- **High stock bajo percentage** (>30%): Need to reorder soon
+- **High agotado percentage** (>15%): Urgent attention required
+
+### Revenue Trends
+
+- **Consistent growth**: Business expanding well
+- **Flat line**: Market saturation or need for marketing
+- **Declining trend**: Investigate causes (competition, seasonality, etc.)
+
+## Best Practices
+
+<Info>
+Review analytics daily to make data-driven business decisions.
+</Info>
+
+- **Check daily**: Review KPIs every morning
+- **Track trends**: Look for patterns over weeks and months
+- **Compare periods**: Analyze week-over-week and month-over-month
+- **Act on insights**: Use data to drive inventory and sales decisions
+- **Monitor inventory**: Keep "Agotado" percentage below 10%
+- **Watch growth metrics**: Positive trends indicate healthy business
+- **Investigate anomalies**: Sudden changes need immediate attention
+
+## Using Analytics for Decision Making
+
+### Inventory Decisions
+
+<Steps>
+  <Step title="Review rotation chart">
+    Identify top-selling products.
+  </Step>
+  
+  <Step title="Check stock status">
+    Ensure best-sellers have adequate stock.
+  </Step>
+  
+  <Step title="Analyze slow movers">
+    Consider promotions for products with low rotation.
+  </Step>
+  
+  <Step title="Plan purchases">
+    Order based on sales velocity and current stock.
+  </Step>
+</Steps>
+
+### Sales Strategy
+
+<Steps>
+  <Step title="Identify peak days">
+    Review income trends to find busiest days.
+  </Step>
+  
+  <Step title="Schedule staff">
+    Ensure adequate coverage on high-volume days.
+  </Step>
+  
+  <Step title="Plan promotions">
+    Run sales on typically slower days to boost revenue.
+  </Step>
+</Steps>
+
+### Financial Planning
+
+<Steps>
+  <Step title="Track monthly revenue">
+    Use annual summary to project future income.
+  </Step>
+  
+  <Step title="Monitor expenses">
+    Keep spending in line with revenue.
+  </Step>
+  
+  <Step title="Calculate profitability">
+    Compare income vs. expenses for net profit.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+### Charts Not Displaying
+
+- Refresh the page (Ctrl+R or Cmd+R)
+- Click the "Actualizar" button
+- Check your internet connection
+- Ensure you're logged in with valid credentials
+
+### Incorrect Data
+
+- Verify date filters are set correctly
+- Check that sales have been properly recorded
+- Refresh analytics to get latest data
+- Contact administrator if discrepancies persist
+
+### Performance Issues
+
+- Clear browser cache
+- Close unnecessary browser tabs
+- Check system requirements
+- Try a different browser
+
+## Technical Reference
+
+Analytics operations use the `analyticsService.js` service:
+
+- **Get analytics data**: `analyticsService.getAnalyticsData()`
+- **Today's stats**: `analyticsService.getTodayStats()`
+- **Inventory analysis**: `analyticsService.getInventoryAnalysis()`
+- **Executive summary**: `analyticsService.getExecutiveSummary()`
+- **Custom period**: `analyticsService.getCustomPeriodData(start, end, groupBy)`
+
+Charts are rendered using Chart.js library and data is fetched from `https://cemac-api.vercel.app/analysis/sales`.
